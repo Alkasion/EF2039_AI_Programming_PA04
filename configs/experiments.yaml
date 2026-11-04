@@ -1,0 +1,30 @@
+# Single source of truth for every experiment in the paper.
+# TODO(topic): fill in dataset + classes and replace the placeholder experiments
+# once the research questions are fixed.
+
+seed: 42
+
+data:
+  raw_dir: data/raw          # expected layout: data/raw/<class_name>/<image files>
+  splits_dir: data/splits    # committed CSV split files (filepath,label)
+  classes: []                # TODO(topic): e.g. [class_a, class_b]
+  image_size: [224, 224]
+  test_per_class: 50         # fixed test set shared by ALL experiments
+  val_per_class: 10          # fixed validation set shared by ALL experiments
+
+train:
+  backbone: mobilenetv2      # mobilenetv2 (frozen ImageNet features) | small_cnn
+  epochs: 20
+  batch_size: 16
+  learning_rate: 1.0e-3
+  augment: false
+
+# Each experiment only differs in its training subset.
+# train_per_class: {default: N} or {<class_name>: N, ...} (missing classes fall back to default)
+experiments:
+  - name: placeholder_balanced_10
+    rq: TBD
+    train_per_class: {default: 10}
+  - name: placeholder_balanced_200
+    rq: TBD
+    train_per_class: {default: 200}

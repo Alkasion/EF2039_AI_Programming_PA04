@@ -1,0 +1,14 @@
+# Raw images are downloaded by script, never committed (license + size)
+data/raw/
+
+# Model checkpoints: committed only if small enough; otherwise shared via link (see models/README.md)
+models/*.keras
+models/*.h5
+
+# Python / OS
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.DS_Store
+.vscode/
+.idea/
