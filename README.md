@@ -37,7 +37,8 @@ src/make_figures.py        # figures in results/figures/
 src/run_all.py             # one command: (prepare) -> baseline -> train + evaluate all -> summary -> figures
 data/splits/               # committed split CSVs — the exact files used
 models/                    # checkpoints (download links in models/README.md)
-results/                   # metrics, confusion matrices, predictions, figures
+results/                   # metrics, confusion matrices, predictions, figures (Mac M4, MPS)
+results_backendai/         # the same experiments re-run on Backend.AI (A100 fGPU, CUDA)
 ```
 
 ## Setup
@@ -166,6 +167,26 @@ Results above were produced on an Apple M4 MacBook (10-core CPU, 16 GB RAM) with
 Mean ± standard deviation over 5 training seeds (42–46); the baseline is deterministic. Test set: 100 sharp + 100 defocus + 100 motion real photos. Per-run numbers: `results/summary_per_seed.csv`.
 
 Small differences (about ±1 photo per run) are possible across devices, because GPU kernels are not bit-exact.
+
+## Cross-device check (Backend.AI)
+
+All experiments were also run from scratch on KENTECH Backend.AI (fractional A100, CUDA, PyTorch 2.8 NGC image),
+with data downloaded and split on the server. The rebuilt split files were byte-identical to `data/splits/`,
+and the Laplacian baseline gave exactly the same numbers. Trained models differ slightly because GPU kernels
+and library versions differ, but every conclusion is the same on both devices. Full outputs: `results_backendai/`.
+
+| Method | Device | Sharp kept | Defocus rejected | Motion rejected | Balanced acc. |
+|---|---|---|---|---|---|
+| `laplacian_baseline` | Mac M4 (MPS) | 0.820 | 0.990 | 0.840 | 0.868 |
+| `laplacian_baseline` | A100 fGPU (CUDA) | 0.820 | 0.990 | 0.840 | 0.868 |
+| `real_mixed` | Mac M4 (MPS) | 0.966 ± 0.005 | 1.000 ± 0.000 | 0.984 ± 0.005 | 0.979 ± 0.001 |
+| `real_mixed` | A100 fGPU (CUDA) | 0.960 ± 0.012 | 1.000 ± 0.000 | 0.986 ± 0.005 | 0.977 ± 0.005 |
+| `synth_mixed` | Mac M4 (MPS) | 0.988 ± 0.004 | 0.986 ± 0.005 | 0.936 ± 0.015 | 0.975 ± 0.005 |
+| `synth_mixed` | A100 fGPU (CUDA) | 0.982 ± 0.013 | 0.990 ± 0.007 | 0.948 ± 0.023 | 0.976 ± 0.005 |
+| `real_motion_only` | Mac M4 (MPS) | 0.958 ± 0.013 | 0.998 ± 0.004 | 0.988 ± 0.008 | 0.976 ± 0.007 |
+| `real_motion_only` | A100 fGPU (CUDA) | 0.960 ± 0.012 | 0.998 ± 0.004 | 0.988 ± 0.008 | 0.977 ± 0.005 |
+| `real_defocus_only` | Mac M4 (MPS) | 0.986 ± 0.009 | 0.998 ± 0.004 | 0.916 ± 0.026 | 0.972 ± 0.007 |
+| `real_defocus_only` | A100 fGPU (CUDA) | 0.986 ± 0.009 | 0.998 ± 0.004 | 0.916 ± 0.019 | 0.972 ± 0.006 |
 
 ## License and citation
 

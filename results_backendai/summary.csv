@@ -1,0 +1,6 @@
+experiment,rq,train_blur,n_runs,acc_sharp_mean,acc_sharp_std,acc_defocus_mean,acc_defocus_std,acc_motion_mean,acc_motion_std,balanced_accuracy_mean,balanced_accuracy_std,accuracy_mean,accuracy_std,precision_blurry_mean,precision_blurry_std,recall_blurry_mean,recall_blurry_std,f1_blurry_mean,f1_blurry_std,roc_auc_mean,roc_auc_std
+laplacian_baseline,baseline,none (threshold tuned on val_real_mixed),1,0.8200,0.0000,0.9900,0.0000,0.8400,0.0000,0.8675,0.0000,0.8833,0.0000,0.9104,0.0000,0.9150,0.0000,0.9127,0.0000,0.9525,0.0000
+real_mixed,RQ1 RQ2,real defocus + real motion,5,0.9600,0.0122,1.0000,0.0000,0.9860,0.0055,0.9765,0.0052,0.9820,0.0030,0.9803,0.0059,0.9930,0.0027,0.9866,0.0022,0.9991,0.0002
+synth_mixed,RQ1,synthetic defocus + synthetic motion,5,0.9820,0.0130,0.9900,0.0071,0.9480,0.0228,0.9755,0.0054,0.9733,0.0071,0.9909,0.0064,0.9690,0.0139,0.9797,0.0055,0.9972,0.0004
+real_motion_only,RQ2,real motion,5,0.9600,0.0122,0.9980,0.0045,0.9880,0.0084,0.9765,0.0049,0.9820,0.0030,0.9803,0.0059,0.9930,0.0045,0.9866,0.0022,0.9985,0.0003
+real_defocus_only,RQ2,real defocus,5,0.9860,0.0089,0.9980,0.0045,0.9160,0.0195,0.9715,0.0058,0.9667,0.0067,0.9928,0.0046,0.9570,0.0104,0.9745,0.0052,0.9962,0.0006

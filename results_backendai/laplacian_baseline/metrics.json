@@ -1,0 +1,14 @@
+{
+  "experiment": "laplacian_baseline",
+  "n_test": 300,
+  "accuracy": 0.8833333333333333,
+  "balanced_accuracy": 0.8674999999999999,
+  "precision_blurry": 0.9104477611940298,
+  "recall_blurry": 0.915,
+  "f1_blurry": 0.912718204488778,
+  "roc_auc": 0.95245,
+  "acc_sharp": 0.82,
+  "acc_defocus": 0.99,
+  "acc_motion": 0.84,
+  "laplacian_var_threshold": 270.6672923322146
+}

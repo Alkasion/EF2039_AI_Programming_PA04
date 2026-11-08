@@ -1,0 +1,23 @@
+{
+  "device": "cuda",
+  "real_mixed_seed42_train_seconds": 20.1,
+  "real_mixed_seed43_train_seconds": 17.4,
+  "real_mixed_seed44_train_seconds": 19.9,
+  "real_mixed_seed45_train_seconds": 20.4,
+  "real_mixed_seed46_train_seconds": 19.9,
+  "synth_mixed_seed42_train_seconds": 19.7,
+  "synth_mixed_seed43_train_seconds": 20.6,
+  "synth_mixed_seed44_train_seconds": 19.9,
+  "synth_mixed_seed45_train_seconds": 20.2,
+  "synth_mixed_seed46_train_seconds": 19.6,
+  "real_motion_only_seed42_train_seconds": 20.4,
+  "real_motion_only_seed43_train_seconds": 19.0,
+  "real_motion_only_seed44_train_seconds": 19.9,
+  "real_motion_only_seed45_train_seconds": 21.0,
+  "real_motion_only_seed46_train_seconds": 21.4,
+  "real_defocus_only_seed42_train_seconds": 21.8,
+  "real_defocus_only_seed43_train_seconds": 21.8,
+  "real_defocus_only_seed44_train_seconds": 22.2,
+  "real_defocus_only_seed45_train_seconds": 21.6,
+  "real_defocus_only_seed46_train_seconds": 21.8
+}

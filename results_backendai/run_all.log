@@ -1,0 +1,655 @@
+ENV 3.12.3 2.8.0a0+5228986c39.nv25.05 0.22.0a0 1.26.4 4.10.0 1.6.1 CUDA GPU
+Downloading https://www.kaggle.com/api/v1/datasets/download/kwentar/blur-dataset (~1.6 GB) ...
+Extracted images to /home/work/EF2039_AI_Basic/EF2039_AI_Programming_PA04/data/raw
+Found 350 complete scenes (sharp + defocus + motion)
+Wrote processed images to /home/work/EF2039_AI_Basic/EF2039_AI_Programming_PA04/data/processed
+Scenes: test 100, val 30, train pool 220
+Wrote splits to /home/work/EF2039_AI_Basic/EF2039_AI_Programming_PA04/data/splits
+e8d049107a23dbee84368e7b53ae3c0c14961e712091132f36d67cadc480fdea  data/splits/test.csv
+52e9aae8a68e3b60506afc0d32fd73f0203a4d24aa4394f5196c9d8f37ef9d17  data/splits/train_real_mixed.csv
+{
+  "experiment": "laplacian_baseline",
+  "n_test": 300,
+  "accuracy": 0.8833333333333333,
+  "balanced_accuracy": 0.8674999999999999,
+  "precision_blurry": 0.9104477611940298,
+  "recall_blurry": 0.915,
+  "f1_blurry": 0.912718204488778,
+  "roc_auc": 0.95245,
+  "acc_sharp": 0.82,
+  "acc_defocus": 0.99,
+  "acc_motion": 0.84,
+  "laplacian_var_threshold": 270.6672923322146
+}
+[real_mixed seed 42] device=cuda train=400 {('defocus', 'real'): 100, ('motion', 'real'): 100, ('sharp', 'real'): 200} val=60
+Downloading: "https://download.pytorch.org/models/resnet18-f37072fd.pth" to /tmp/torch/hub/checkpoints/resnet18-f37072fd.pth
+  0%|          | 0.00/44.7M [00:00<?, ?B/s] 13%|█▎        | 5.62M/44.7M [00:00<00:00, 58.7MB/s] 25%|██▌       | 11.2M/44.7M [00:00<00:01, 33.6MB/s] 34%|███▍      | 15.1M/44.7M [00:01<00:02, 12.2MB/s] 39%|███▉      | 17.5M/44.7M [00:01<00:03, 9.49MB/s] 43%|████▎     | 19.1M/44.7M [00:01<00:03, 8.49MB/s] 46%|████▌     | 20.4M/44.7M [00:01<00:03, 7.79MB/s] 48%|████▊     | 21.4M/44.7M [00:02<00:03, 7.31MB/s] 50%|████▉     | 22.2M/44.7M [00:02<00:03, 6.99MB/s] 51%|█████▏    | 23.0M/44.7M [00:02<00:03, 6.85MB/s] 53%|█████▎    | 23.8M/44.7M [00:02<00:03, 6.54MB/s] 55%|█████▍    | 24.5M/44.7M [00:02<00:03, 6.29MB/s] 56%|█████▋    | 25.1M/44.7M [00:02<00:03, 6.12MB/s] 58%|█████▊    | 25.8M/44.7M [00:02<00:03, 5.99MB/s] 59%|█████▉    | 26.4M/44.7M [00:03<00:03, 6.02MB/s] 60%|██████    | 27.0M/44.7M [00:03<00:03, 6.07MB/s] 62%|██████▏   | 27.6M/44.7M [00:03<00:03, 5.93MB/s] 63%|██████▎   | 28.2M/44.7M [00:03<00:02, 5.84MB/s] 65%|██████▍   | 28.9M/44.7M [00:03<00:02, 5.76MB/s] 66%|██████▌   | 29.5M/44.7M [00:03<00:02, 5.70MB/s] 67%|██████▋   | 30.1M/44.7M [00:03<00:02, 5.63MB/s] 69%|██████▉   | 30.8M/44.7M [00:03<00:02, 5.73MB/s] 70%|███████   | 31.4M/44.7M [00:04<00:02, 5.61MB/s] 72%|███████▏  | 32.0M/44.7M [00:04<00:02, 5.54MB/s] 73%|███████▎  | 32.6M/44.7M [00:04<00:02, 5.48MB/s] 74%|███████▍  | 33.2M/44.7M [00:04<00:02, 5.49MB/s] 76%|███████▌  | 33.9M/44.7M [00:04<00:02, 5.58MB/s] 78%|███████▊  | 34.6M/44.7M [00:04<00:01, 5.90MB/s] 79%|███████▉  | 35.2M/44.7M [00:04<00:01, 5.78MB/s] 80%|████████  | 35.9M/44.7M [00:04<00:01, 5.70MB/s] 82%|████████▏ | 36.5M/44.7M [00:04<00:01, 5.47MB/s] 83%|████████▎ | 37.1M/44.7M [00:05<00:01, 5.67MB/s] 85%|████████▍ | 37.8M/44.7M [00:05<00:01, 5.55MB/s] 86%|████████▌ | 38.5M/44.7M [00:05<00:01, 6.02MB/s] 88%|████████▊ | 39.1M/44.7M [00:05<00:00, 5.88MB/s] 89%|████████▉ | 39.8M/44.7M [00:05<00:00, 5.78MB/s] 90%|█████████ | 40.4M/44.7M [00:05<00:00, 5.72MB/s] 92%|█████████▏| 41.0M/44.7M [00:05<00:00, 5.70MB/s] 93%|█████████▎| 41.6M/44.7M [00:05<00:00, 5.75MB/s] 95%|█████████▍| 42.2M/44.7M [00:06<00:00, 5.92MB/s] 96%|█████████▌| 42.9M/44.7M [00:06<00:00, 5.79MB/s] 97%|█████████▋| 43.5M/44.7M [00:06<00:00, 5.70MB/s] 99%|█████████▉| 44.1M/44.7M [00:06<00:00, 5.63MB/s]100%|██████████| 44.7M/44.7M [00:06<00:00, 7.24MB/s]
+/home/work/EF2039_AI_Basic/EF2039_AI_Programming_PA04/src/train.py:33: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /opt/pytorch/pytorch/aten/src/ATen/native/Scalar.cpp:22.)
+  total_loss += loss.item() * len(y)
+  epoch  1  loss 0.3639 acc 0.838  val_loss 0.1479 val_acc 0.917 *
+  epoch  2  loss 0.0365 acc 0.995  val_loss 0.1282 val_acc 0.967 *
+  epoch  3  loss 0.0209 acc 0.995  val_loss 0.0372 val_acc 0.983 *
+  epoch  4  loss 0.0112 acc 1.000  val_loss 0.0357 val_acc 0.967 *
+  epoch  5  loss 0.0040 acc 1.000  val_loss 0.0742 val_acc 0.967
+  epoch  6  loss 0.0095 acc 0.995  val_loss 0.1501 val_acc 0.967
+  epoch  7  loss 0.0041 acc 1.000  val_loss 0.0830 val_acc 0.967
+  epoch  8  loss 0.0032 acc 1.000  val_loss 0.0393 val_acc 0.983
+  epoch  9  loss 0.0014 acc 1.000  val_loss 0.0395 val_acc 0.983
+  epoch 10  loss 0.0109 acc 0.995  val_loss 0.0380 val_acc 0.983
+  epoch 11  loss 0.0596 acc 0.990  val_loss 0.1057 val_acc 0.933
+  epoch 12  loss 0.0056 acc 1.000  val_loss 0.0595 val_acc 0.967
+  epoch 13  loss 0.0070 acc 1.000  val_loss 0.0824 val_acc 0.967
+  epoch 14  loss 0.0021 acc 1.000  val_loss 0.0666 val_acc 0.983
+  epoch 15  loss 0.0017 acc 1.000  val_loss 0.0518 val_acc 0.983
+[real_mixed seed 42] 20s on cuda; best checkpoint -> /home/work/EF2039_AI_Basic/EF2039_AI_Programming_PA04/models/real_mixed_seed42.pt
+{
+  "experiment": "real_mixed",
+  "n_test": 300,
+  "accuracy": 0.9833333333333333,
+  "balanced_accuracy": 0.9775,
+  "precision_blurry": 0.9802955665024631,
+  "recall_blurry": 0.995,
+  "f1_blurry": 0.9875930521091811,
+  "roc_auc": 0.9992500000000001,
+  "acc_sharp": 0.96,
+  "acc_defocus": 1.0,
+  "acc_motion": 0.99,
+  "seed": 42
+}
+[real_mixed seed 43] device=cuda train=400 {('defocus', 'real'): 100, ('motion', 'real'): 100, ('sharp', 'real'): 200} val=60
+  epoch  1  loss 0.3756 acc 0.840  val_loss 0.0963 val_acc 0.950 *
+  epoch  2  loss 0.0617 acc 0.985  val_loss 0.0419 val_acc 0.967 *
+  epoch  3  loss 0.0272 acc 0.995  val_loss 0.0352 val_acc 0.983 *
+  epoch  4  loss 0.0187 acc 0.995  val_loss 0.0411 val_acc 0.983
+  epoch  5  loss 0.0068 acc 1.000  val_loss 0.0505 val_acc 0.983
+  epoch  6  loss 0.0060 acc 1.000  val_loss 0.0460 val_acc 0.983
+  epoch  7  loss 0.0038 acc 1.000  val_loss 0.0298 val_acc 0.983 *
+  epoch  8  loss 0.0030 acc 1.000  val_loss 0.0204 val_acc 0.983 *
+  epoch  9  loss 0.0018 acc 1.000  val_loss 0.0199 val_acc 0.983 *
+  epoch 10  loss 0.0035 acc 1.000  val_loss 0.0147 val_acc 1.000 *
+  epoch 11  loss 0.0010 acc 1.000  val_loss 0.0146 val_acc 1.000 *
+  epoch 12  loss 0.0013 acc 1.000  val_loss 0.0136 val_acc 1.000 *
+  epoch 13  loss 0.0009 acc 1.000  val_loss 0.0139 val_acc 1.000
+  epoch 14  loss 0.0022 acc 1.000  val_loss 0.0188 val_acc 0.983
+  epoch 15  loss 0.0010 acc 1.000  val_loss 0.0356 val_acc 0.983
+[real_mixed seed 43] 17s on cuda; best checkpoint -> /home/work/EF2039_AI_Basic/EF2039_AI_Programming_PA04/models/real_mixed_seed43.pt
+{
+  "experiment": "real_mixed",
+  "n_test": 300,
+  "accuracy": 0.9833333333333333,
+  "balanced_accuracy": 0.98,
+  "precision_blurry": 0.9850746268656716,
+  "recall_blurry": 0.99,
+  "f1_blurry": 0.9875311720698254,
+  "roc_auc": 0.99915,
+  "acc_sharp": 0.97,
+  "acc_defocus": 1.0,
+  "acc_motion": 0.98,
+  "seed": 43
+}
+[real_mixed seed 44] device=cuda train=400 {('defocus', 'real'): 100, ('motion', 'real'): 100, ('sharp', 'real'): 200} val=60
+  epoch  1  loss 0.3808 acc 0.858  val_loss 0.2518 val_acc 0.917 *
+  epoch  2  loss 0.0574 acc 0.988  val_loss 0.0951 val_acc 0.983 *
+  epoch  3  loss 0.0186 acc 0.995  val_loss 0.0925 val_acc 0.983 *
+  epoch  4  loss 0.0222 acc 0.993  val_loss 0.0657 val_acc 0.967 *
+  epoch  5  loss 0.0084 acc 0.998  val_loss 0.0892 val_acc 0.967
+  epoch  6  loss 0.0037 acc 1.000  val_loss 0.0929 val_acc 0.967
+  epoch  7  loss 0.0048 acc 0.998  val_loss 0.0627 val_acc 0.983 *
+  epoch  8  loss 0.0029 acc 1.000  val_loss 0.0816 val_acc 0.983
+  epoch  9  loss 0.0024 acc 1.000  val_loss 0.0979 val_acc 0.983
+  epoch 10  loss 0.0133 acc 0.995  val_loss 0.1308 val_acc 0.967
+  epoch 11  loss 0.0102 acc 0.995  val_loss 0.0754 val_acc 0.983
+  epoch 12  loss 0.0014 acc 1.000  val_loss 0.1186 val_acc 0.983
+  epoch 13  loss 0.0014 acc 1.000  val_loss 0.1113 val_acc 0.983
+  epoch 14  loss 0.0012 acc 1.000  val_loss 0.1013 val_acc 0.983
+  epoch 15  loss 0.0043 acc 1.000  val_loss 0.0812 val_acc 0.983
+[real_mixed seed 44] 20s on cuda; best checkpoint -> /home/work/EF2039_AI_Basic/EF2039_AI_Programming_PA04/models/real_mixed_seed44.pt
+{
+  "experiment": "real_mixed",
+  "n_test": 300,
+  "accuracy": 0.9833333333333333,
+  "balanced_accuracy": 0.9775,
+  "precision_blurry": 0.9802955665024631,
+  "recall_blurry": 0.995,
+  "f1_blurry": 0.9875930521091811,
+  "roc_auc": 0.9992500000000001,
+  "acc_sharp": 0.96,
+  "acc_defocus": 1.0,
+  "acc_motion": 0.99,
+  "seed": 44
+}
+[real_mixed seed 45] device=cuda train=400 {('defocus', 'real'): 100, ('motion', 'real'): 100, ('sharp', 'real'): 200} val=60
+  epoch  1  loss 0.3638 acc 0.833  val_loss 0.1496 val_acc 0.933 *
+  epoch  2  loss 0.0503 acc 0.990  val_loss 0.0645 val_acc 0.967 *
+  epoch  3  loss 0.0314 acc 0.990  val_loss 0.0297 val_acc 0.983 *
+  epoch  4  loss 0.0207 acc 0.990  val_loss 0.0257 val_acc 0.983 *
+  epoch  5  loss 0.0070 acc 1.000  val_loss 0.0360 val_acc 0.983
+  epoch  6  loss 0.0084 acc 0.998  val_loss 0.0552 val_acc 0.983
+  epoch  7  loss 0.0178 acc 0.995  val_loss 0.0297 val_acc 0.983
+  epoch  8  loss 0.0065 acc 1.000  val_loss 0.0331 val_acc 0.983
+  epoch  9  loss 0.0076 acc 0.998  val_loss 0.0217 val_acc 1.000 *
+  epoch 10  loss 0.0027 acc 1.000  val_loss 0.0177 val_acc 1.000 *
+  epoch 11  loss 0.0049 acc 0.998  val_loss 0.0232 val_acc 0.983
+  epoch 12  loss 0.0076 acc 0.998  val_loss 0.0128 val_acc 1.000 *
+  epoch 13  loss 0.0052 acc 0.998  val_loss 0.0162 val_acc 1.000
+  epoch 14  loss 0.0008 acc 1.000  val_loss 0.0267 val_acc 0.983
+  epoch 15  loss 0.0006 acc 1.000  val_loss 0.0290 val_acc 0.983
+[real_mixed seed 45] 20s on cuda; best checkpoint -> /home/work/EF2039_AI_Basic/EF2039_AI_Programming_PA04/models/real_mixed_seed45.pt
+{
+  "experiment": "real_mixed",
+  "n_test": 300,
+  "accuracy": 0.9833333333333333,
+  "balanced_accuracy": 0.98,
+  "precision_blurry": 0.9850746268656716,
+  "recall_blurry": 0.99,
+  "f1_blurry": 0.9875311720698254,
+  "roc_auc": 0.99885,
+  "acc_sharp": 0.97,
+  "acc_defocus": 1.0,
+  "acc_motion": 0.98,
+  "seed": 45
+}
+[real_mixed seed 46] device=cuda train=400 {('defocus', 'real'): 100, ('motion', 'real'): 100, ('sharp', 'real'): 200} val=60
+  epoch  1  loss 0.3615 acc 0.805  val_loss 0.0866 val_acc 0.983 *
+  epoch  2  loss 0.0594 acc 0.985  val_loss 0.0502 val_acc 0.983 *
+  epoch  3  loss 0.0139 acc 1.000  val_loss 0.0394 val_acc 0.983 *
+  epoch  4  loss 0.0193 acc 0.995  val_loss 0.0180 val_acc 1.000 *
+  epoch  5  loss 0.0077 acc 1.000  val_loss 0.0208 val_acc 1.000
+  epoch  6  loss 0.0093 acc 1.000  val_loss 0.0222 val_acc 0.983
+  epoch  7  loss 0.0074 acc 1.000  val_loss 0.0172 val_acc 1.000 *
+  epoch  8  loss 0.0115 acc 0.998  val_loss 0.0558 val_acc 0.967
+  epoch  9  loss 0.0056 acc 0.998  val_loss 0.0510 val_acc 0.967
+  epoch 10  loss 0.0081 acc 0.995  val_loss 0.0309 val_acc 0.983
+  epoch 11  loss 0.0203 acc 0.993  val_loss 0.2828 val_acc 0.900
+  epoch 12  loss 0.0409 acc 0.990  val_loss 0.0132 val_acc 1.000 *
+  epoch 13  loss 0.0091 acc 0.998  val_loss 0.0134 val_acc 1.000
+  epoch 14  loss 0.0125 acc 0.998  val_loss 0.1424 val_acc 0.950
+  epoch 15  loss 0.0057 acc 1.000  val_loss 0.0756 val_acc 0.967
+[real_mixed seed 46] 20s on cuda; best checkpoint -> /home/work/EF2039_AI_Basic/EF2039_AI_Programming_PA04/models/real_mixed_seed46.pt
+{
+  "experiment": "real_mixed",
+  "n_test": 300,
+  "accuracy": 0.9766666666666667,
+  "balanced_accuracy": 0.9675,
+  "precision_blurry": 0.9707317073170731,
+  "recall_blurry": 0.995,
+  "f1_blurry": 0.9827160493827161,
+  "roc_auc": 0.99895,
+  "acc_sharp": 0.94,
+  "acc_defocus": 1.0,
+  "acc_motion": 0.99,
+  "seed": 46
+}
+[synth_mixed seed 42] device=cuda train=400 {('defocus', 'synthetic'): 100, ('motion', 'synthetic'): 100, ('sharp', 'real'): 200} val=60
+  epoch  1  loss 0.3392 acc 0.868  val_loss 0.0675 val_acc 0.967 *
+  epoch  2  loss 0.0354 acc 0.998  val_loss 0.0045 val_acc 1.000 *
+  epoch  3  loss 0.0212 acc 0.993  val_loss 0.0059 val_acc 1.000
+  epoch  4  loss 0.0102 acc 0.998  val_loss 0.0013 val_acc 1.000 *
+  epoch  5  loss 0.0026 acc 1.000  val_loss 0.0014 val_acc 1.000
+  epoch  6  loss 0.0019 acc 1.000  val_loss 0.0014 val_acc 1.000
+  epoch  7  loss 0.0019 acc 1.000  val_loss 0.0007 val_acc 1.000 *
+  epoch  8  loss 0.0021 acc 1.000  val_loss 0.0009 val_acc 1.000
+  epoch  9  loss 0.0013 acc 1.000  val_loss 0.0009 val_acc 1.000
+  epoch 10  loss 0.0050 acc 1.000  val_loss 0.0011 val_acc 1.000
+  epoch 11  loss 0.0865 acc 0.975  val_loss 0.0039 val_acc 1.000
+  epoch 12  loss 0.0184 acc 0.990  val_loss 0.0036 val_acc 1.000
+  epoch 13  loss 0.0083 acc 1.000  val_loss 0.0021 val_acc 1.000
+  epoch 14  loss 0.0020 acc 1.000  val_loss 0.0014 val_acc 1.000
+  epoch 15  loss 0.0017 acc 1.000  val_loss 0.0013 val_acc 1.000
+[synth_mixed seed 42] 20s on cuda; best checkpoint -> /home/work/EF2039_AI_Basic/EF2039_AI_Programming_PA04/models/synth_mixed_seed42.pt
+{
+  "experiment": "synth_mixed",
+  "n_test": 300,
+  "accuracy": 0.98,
+  "balanced_accuracy": 0.9824999999999999,
+  "precision_blurry": 0.9948979591836735,
+  "recall_blurry": 0.975,
+  "f1_blurry": 0.9848484848484849,
+  "roc_auc": 0.9966999999999999,
+  "acc_sharp": 0.99,
+  "acc_defocus": 0.99,
+  "acc_motion": 0.96,
+  "seed": 42
+}
+[synth_mixed seed 43] device=cuda train=400 {('defocus', 'synthetic'): 100, ('motion', 'synthetic'): 100, ('sharp', 'real'): 200} val=60
+  epoch  1  loss 0.3706 acc 0.815  val_loss 0.0384 val_acc 1.000 *
+  epoch  2  loss 0.0479 acc 0.990  val_loss 0.0039 val_acc 1.000 *
+  epoch  3  loss 0.0217 acc 0.998  val_loss 0.0055 val_acc 1.000
+  epoch  4  loss 0.0130 acc 0.998  val_loss 0.0033 val_acc 1.000 *
+  epoch  5  loss 0.0053 acc 1.000  val_loss 0.0023 val_acc 1.000 *
+  epoch  6  loss 0.0074 acc 0.998  val_loss 0.0016 val_acc 1.000 *
+  epoch  7  loss 0.0042 acc 1.000  val_loss 0.0015 val_acc 1.000 *
+  epoch  8  loss 0.0068 acc 0.998  val_loss 0.0009 val_acc 1.000 *
+  epoch  9  loss 0.0011 acc 1.000  val_loss 0.0005 val_acc 1.000 *
+  epoch 10  loss 0.0129 acc 0.998  val_loss 0.0012 val_acc 1.000
+  epoch 11  loss 0.0012 acc 1.000  val_loss 0.0007 val_acc 1.000
+  epoch 12  loss 0.0027 acc 1.000  val_loss 0.0004 val_acc 1.000 *
+  epoch 13  loss 0.0009 acc 1.000  val_loss 0.0003 val_acc 1.000 *
+  epoch 14  loss 0.0042 acc 1.000  val_loss 0.0008 val_acc 1.000
+  epoch 15  loss 0.0156 acc 0.998  val_loss 0.0005 val_acc 1.000
+[synth_mixed seed 43] 21s on cuda; best checkpoint -> /home/work/EF2039_AI_Basic/EF2039_AI_Programming_PA04/models/synth_mixed_seed43.pt
+{
+  "experiment": "synth_mixed",
+  "n_test": 300,
+  "accuracy": 0.9733333333333334,
+  "balanced_accuracy": 0.9775,
+  "precision_blurry": 0.9948453608247423,
+  "recall_blurry": 0.965,
+  "f1_blurry": 0.9796954314720813,
+  "roc_auc": 0.9977,
+  "acc_sharp": 0.99,
+  "acc_defocus": 0.99,
+  "acc_motion": 0.94,
+  "seed": 43
+}
+[synth_mixed seed 44] device=cuda train=400 {('defocus', 'synthetic'): 100, ('motion', 'synthetic'): 100, ('sharp', 'real'): 200} val=60
+  epoch  1  loss 0.3718 acc 0.850  val_loss 0.0754 val_acc 0.950 *
+  epoch  2  loss 0.0652 acc 0.983  val_loss 0.0079 val_acc 1.000 *
+  epoch  3  loss 0.0201 acc 0.995  val_loss 0.0080 val_acc 1.000
+  epoch  4  loss 0.0190 acc 0.995  val_loss 0.0049 val_acc 1.000 *
+  epoch  5  loss 0.0066 acc 1.000  val_loss 0.0098 val_acc 1.000
+  epoch  6  loss 0.0031 acc 1.000  val_loss 0.0098 val_acc 1.000
+  epoch  7  loss 0.0043 acc 1.000  val_loss 0.0043 val_acc 1.000 *
+  epoch  8  loss 0.0021 acc 1.000  val_loss 0.0020 val_acc 1.000 *
+  epoch  9  loss 0.0017 acc 1.000  val_loss 0.0014 val_acc 1.000 *
+  epoch 10  loss 0.0059 acc 0.998  val_loss 0.0026 val_acc 1.000
+  epoch 11  loss 0.0088 acc 0.998  val_loss 0.0016 val_acc 1.000
+  epoch 12  loss 0.0010 acc 1.000  val_loss 0.0010 val_acc 1.000 *
+  epoch 13  loss 0.0015 acc 1.000  val_loss 0.0009 val_acc 1.000 *
+  epoch 14  loss 0.0014 acc 1.000  val_loss 0.0007 val_acc 1.000 *
+  epoch 15  loss 0.0014 acc 1.000  val_loss 0.0007 val_acc 1.000 *
+[synth_mixed seed 44] 20s on cuda; best checkpoint -> /home/work/EF2039_AI_Basic/EF2039_AI_Programming_PA04/models/synth_mixed_seed44.pt
+{
+  "experiment": "synth_mixed",
+  "n_test": 300,
+  "accuracy": 0.97,
+  "balanced_accuracy": 0.975,
+  "precision_blurry": 0.9948186528497409,
+  "recall_blurry": 0.96,
+  "f1_blurry": 0.9770992366412213,
+  "roc_auc": 0.99695,
+  "acc_sharp": 0.99,
+  "acc_defocus": 0.98,
+  "acc_motion": 0.94,
+  "seed": 44
+}
+[synth_mixed seed 45] device=cuda train=400 {('defocus', 'synthetic'): 100, ('motion', 'synthetic'): 100, ('sharp', 'real'): 200} val=60
+  epoch  1  loss 0.3277 acc 0.843  val_loss 0.0491 val_acc 0.967 *
+  epoch  2  loss 0.0430 acc 0.983  val_loss 0.0041 val_acc 1.000 *
+  epoch  3  loss 0.0440 acc 0.988  val_loss 0.0032 val_acc 1.000 *
+  epoch  4  loss 0.0129 acc 0.998  val_loss 0.0049 val_acc 1.000
+  epoch  5  loss 0.0048 acc 1.000  val_loss 0.0128 val_acc 1.000
+  epoch  6  loss 0.0039 acc 1.000  val_loss 0.0144 val_acc 0.983
+  epoch  7  loss 0.0017 acc 1.000  val_loss 0.0124 val_acc 1.000
+  epoch  8  loss 0.0025 acc 1.000  val_loss 0.0120 val_acc 1.000
+  epoch  9  loss 0.0032 acc 1.000  val_loss 0.0029 val_acc 1.000 *
+  epoch 10  loss 0.0016 acc 1.000  val_loss 0.0016 val_acc 1.000 *
+  epoch 11  loss 0.0037 acc 1.000  val_loss 0.0019 val_acc 1.000
+  epoch 12  loss 0.0031 acc 1.000  val_loss 0.0013 val_acc 1.000 *
+  epoch 13  loss 0.0021 acc 1.000  val_loss 0.0017 val_acc 1.000
+  epoch 14  loss 0.0005 acc 1.000  val_loss 0.0016 val_acc 1.000
+  epoch 15  loss 0.0021 acc 1.000  val_loss 0.0033 val_acc 1.000
+[synth_mixed seed 45] 20s on cuda; best checkpoint -> /home/work/EF2039_AI_Basic/EF2039_AI_Programming_PA04/models/synth_mixed_seed45.pt
+{
+  "experiment": "synth_mixed",
+  "n_test": 300,
+  "accuracy": 0.9633333333333334,
+  "balanced_accuracy": 0.9675,
+  "precision_blurry": 0.9896373056994818,
+  "recall_blurry": 0.955,
+  "f1_blurry": 0.9720101781170484,
+  "roc_auc": 0.99705,
+  "acc_sharp": 0.98,
+  "acc_defocus": 0.99,
+  "acc_motion": 0.92,
+  "seed": 45
+}
+[synth_mixed seed 46] device=cuda train=400 {('defocus', 'synthetic'): 100, ('motion', 'synthetic'): 100, ('sharp', 'real'): 200} val=60
+  epoch  1  loss 0.3756 acc 0.810  val_loss 0.0380 val_acc 0.983 *
+  epoch  2  loss 0.0418 acc 0.995  val_loss 0.0101 val_acc 1.000 *
+  epoch  3  loss 0.0142 acc 0.998  val_loss 0.0079 val_acc 1.000 *
+  epoch  4  loss 0.0060 acc 1.000  val_loss 0.0030 val_acc 1.000 *
+  epoch  5  loss 0.0058 acc 1.000  val_loss 0.0015 val_acc 1.000 *
+  epoch  6  loss 0.0086 acc 1.000  val_loss 0.0026 val_acc 1.000
+  epoch  7  loss 0.0041 acc 1.000  val_loss 0.0031 val_acc 1.000
+  epoch  8  loss 0.0196 acc 0.990  val_loss 0.0009 val_acc 1.000 *
+  epoch  9  loss 0.0356 acc 0.990  val_loss 0.0013 val_acc 1.000
+  epoch 10  loss 0.0071 acc 0.998  val_loss 0.0114 val_acc 1.000
+  epoch 11  loss 0.0085 acc 0.998  val_loss 0.0148 val_acc 1.000
+  epoch 12  loss 0.0275 acc 0.995  val_loss 0.0008 val_acc 1.000 *
+  epoch 13  loss 0.0051 acc 1.000  val_loss 0.0011 val_acc 1.000
+  epoch 14  loss 0.0062 acc 0.995  val_loss 0.0032 val_acc 1.000
+  epoch 15  loss 0.0020 acc 1.000  val_loss 0.0012 val_acc 1.000
+[synth_mixed seed 46] 20s on cuda; best checkpoint -> /home/work/EF2039_AI_Basic/EF2039_AI_Programming_PA04/models/synth_mixed_seed46.pt
+{
+  "experiment": "synth_mixed",
+  "n_test": 300,
+  "accuracy": 0.98,
+  "balanced_accuracy": 0.975,
+  "precision_blurry": 0.9801980198019802,
+  "recall_blurry": 0.99,
+  "f1_blurry": 0.9850746268656716,
+  "roc_auc": 0.9974000000000001,
+  "acc_sharp": 0.96,
+  "acc_defocus": 1.0,
+  "acc_motion": 0.98,
+  "seed": 46
+}
+[real_motion_only seed 42] device=cuda train=400 {('motion', 'real'): 200, ('sharp', 'real'): 200} val=60
+  epoch  1  loss 0.3485 acc 0.848  val_loss 0.0693 val_acc 0.967 *
+  epoch  2  loss 0.0414 acc 0.990  val_loss 0.0470 val_acc 0.983 *
+  epoch  3  loss 0.0202 acc 0.995  val_loss 0.0217 val_acc 1.000 *
+  epoch  4  loss 0.0176 acc 0.993  val_loss 0.0230 val_acc 0.983
+  epoch  5  loss 0.0028 acc 1.000  val_loss 0.0399 val_acc 0.967
+  epoch  6  loss 0.0037 acc 1.000  val_loss 0.0798 val_acc 0.967
+  epoch  7  loss 0.0030 acc 1.000  val_loss 0.0514 val_acc 0.967
+  epoch  8  loss 0.0025 acc 1.000  val_loss 0.0205 val_acc 0.983 *
+  epoch  9  loss 0.0011 acc 1.000  val_loss 0.0236 val_acc 1.000
+  epoch 10  loss 0.0056 acc 1.000  val_loss 0.0407 val_acc 0.967
+  epoch 11  loss 0.0354 acc 0.993  val_loss 0.0950 val_acc 0.967
+  epoch 12  loss 0.0064 acc 0.998  val_loss 0.0288 val_acc 0.983
+  epoch 13  loss 0.0045 acc 1.000  val_loss 0.0577 val_acc 0.983
+  epoch 14  loss 0.0016 acc 1.000  val_loss 0.0621 val_acc 0.983
+  epoch 15  loss 0.0011 acc 1.000  val_loss 0.0590 val_acc 0.983
+[real_motion_only seed 42] 20s on cuda; best checkpoint -> /home/work/EF2039_AI_Basic/EF2039_AI_Programming_PA04/models/real_motion_only_seed42.pt
+{
+  "experiment": "real_motion_only",
+  "n_test": 300,
+  "accuracy": 0.98,
+  "balanced_accuracy": 0.9724999999999999,
+  "precision_blurry": 0.9754901960784313,
+  "recall_blurry": 0.995,
+  "f1_blurry": 0.9851485148514851,
+  "roc_auc": 0.99885,
+  "acc_sharp": 0.95,
+  "acc_defocus": 1.0,
+  "acc_motion": 0.99,
+  "seed": 42
+}
+[real_motion_only seed 43] device=cuda train=400 {('motion', 'real'): 200, ('sharp', 'real'): 200} val=60
+  epoch  1  loss 0.3529 acc 0.835  val_loss 0.0956 val_acc 0.950 *
+  epoch  2  loss 0.0629 acc 0.983  val_loss 0.0296 val_acc 0.983 *
+  epoch  3  loss 0.0311 acc 0.988  val_loss 0.0264 val_acc 0.983 *
+  epoch  4  loss 0.0184 acc 0.995  val_loss 0.0257 val_acc 0.983 *
+  epoch  5  loss 0.0071 acc 0.998  val_loss 0.0319 val_acc 0.983
+  epoch  6  loss 0.0059 acc 1.000  val_loss 0.0299 val_acc 0.983
+  epoch  7  loss 0.0040 acc 1.000  val_loss 0.0182 val_acc 1.000 *
+  epoch  8  loss 0.0057 acc 0.998  val_loss 0.0157 val_acc 1.000 *
+  epoch  9  loss 0.0027 acc 1.000  val_loss 0.0359 val_acc 0.983
+  epoch 10  loss 0.0054 acc 1.000  val_loss 0.0549 val_acc 0.983
+  epoch 11  loss 0.0023 acc 1.000  val_loss 0.0452 val_acc 0.983
+  epoch 12  loss 0.0019 acc 1.000  val_loss 0.0392 val_acc 0.983
+  epoch 13  loss 0.0012 acc 1.000  val_loss 0.0413 val_acc 0.983
+  epoch 14  loss 0.0016 acc 1.000  val_loss 0.0347 val_acc 0.983
+  epoch 15  loss 0.0014 acc 1.000  val_loss 0.0526 val_acc 0.983
+[real_motion_only seed 43] 19s on cuda; best checkpoint -> /home/work/EF2039_AI_Basic/EF2039_AI_Programming_PA04/models/real_motion_only_seed43.pt
+{
+  "experiment": "real_motion_only",
+  "n_test": 300,
+  "accuracy": 0.98,
+  "balanced_accuracy": 0.975,
+  "precision_blurry": 0.9801980198019802,
+  "recall_blurry": 0.99,
+  "f1_blurry": 0.9850746268656716,
+  "roc_auc": 0.99825,
+  "acc_sharp": 0.96,
+  "acc_defocus": 0.99,
+  "acc_motion": 0.99,
+  "seed": 43
+}
+[real_motion_only seed 44] device=cuda train=400 {('motion', 'real'): 200, ('sharp', 'real'): 200} val=60
+  epoch  1  loss 0.3555 acc 0.855  val_loss 0.1286 val_acc 0.967 *
+  epoch  2  loss 0.0590 acc 0.980  val_loss 0.0858 val_acc 0.983 *
+  epoch  3  loss 0.0145 acc 1.000  val_loss 0.0748 val_acc 0.983 *
+  epoch  4  loss 0.0204 acc 0.993  val_loss 0.0390 val_acc 0.983 *
+  epoch  5  loss 0.0053 acc 1.000  val_loss 0.0500 val_acc 0.983
+  epoch  6  loss 0.0046 acc 1.000  val_loss 0.0811 val_acc 0.983
+  epoch  7  loss 0.0065 acc 0.998  val_loss 0.0721 val_acc 0.983
+  epoch  8  loss 0.0026 acc 1.000  val_loss 0.0828 val_acc 0.983
+  epoch  9  loss 0.0050 acc 0.998  val_loss 0.1832 val_acc 0.950
+  epoch 10  loss 0.0074 acc 1.000  val_loss 0.1011 val_acc 0.983
+  epoch 11  loss 0.0090 acc 0.995  val_loss 0.0623 val_acc 0.983
+  epoch 12  loss 0.0088 acc 0.998  val_loss 0.1096 val_acc 0.983
+  epoch 13  loss 0.0021 acc 1.000  val_loss 0.0747 val_acc 0.983
+  epoch 14  loss 0.0038 acc 1.000  val_loss 0.0486 val_acc 0.983
+  epoch 15  loss 0.0132 acc 0.995  val_loss 0.0885 val_acc 0.983
+[real_motion_only seed 44] 20s on cuda; best checkpoint -> /home/work/EF2039_AI_Basic/EF2039_AI_Programming_PA04/models/real_motion_only_seed44.pt
+{
+  "experiment": "real_motion_only",
+  "n_test": 300,
+  "accuracy": 0.9833333333333333,
+  "balanced_accuracy": 0.975,
+  "precision_blurry": 0.975609756097561,
+  "recall_blurry": 1.0,
+  "f1_blurry": 0.9876543209876543,
+  "roc_auc": 0.9987499999999999,
+  "acc_sharp": 0.95,
+  "acc_defocus": 1.0,
+  "acc_motion": 1.0,
+  "seed": 44
+}
+[real_motion_only seed 45] device=cuda train=400 {('motion', 'real'): 200, ('sharp', 'real'): 200} val=60
+  epoch  1  loss 0.3551 acc 0.838  val_loss 0.0977 val_acc 0.967 *
+  epoch  2  loss 0.0515 acc 0.988  val_loss 0.0509 val_acc 0.967 *
+  epoch  3  loss 0.0338 acc 0.990  val_loss 0.0236 val_acc 1.000 *
+  epoch  4  loss 0.0221 acc 0.990  val_loss 0.0322 val_acc 0.983
+  epoch  5  loss 0.0070 acc 1.000  val_loss 0.0386 val_acc 0.983
+  epoch  6  loss 0.0052 acc 1.000  val_loss 0.0442 val_acc 0.983
+  epoch  7  loss 0.0025 acc 1.000  val_loss 0.0358 val_acc 0.983
+  epoch  8  loss 0.0023 acc 1.000  val_loss 0.0277 val_acc 0.983
+  epoch  9  loss 0.0036 acc 1.000  val_loss 0.0200 val_acc 0.983 *
+  epoch 10  loss 0.0025 acc 1.000  val_loss 0.0121 val_acc 1.000 *
+  epoch 11  loss 0.0039 acc 1.000  val_loss 0.0401 val_acc 0.983
+  epoch 12  loss 0.0090 acc 0.998  val_loss 0.0105 val_acc 1.000 *
+  epoch 13  loss 0.0170 acc 0.998  val_loss 0.0074 val_acc 1.000 *
+  epoch 14  loss 0.0043 acc 0.998  val_loss 0.0185 val_acc 1.000
+  epoch 15  loss 0.0016 acc 1.000  val_loss 0.0198 val_acc 0.983
+[real_motion_only seed 45] 21s on cuda; best checkpoint -> /home/work/EF2039_AI_Basic/EF2039_AI_Programming_PA04/models/real_motion_only_seed45.pt
+{
+  "experiment": "real_motion_only",
+  "n_test": 300,
+  "accuracy": 0.98,
+  "balanced_accuracy": 0.975,
+  "precision_blurry": 0.9801980198019802,
+  "recall_blurry": 0.99,
+  "f1_blurry": 0.9850746268656716,
+  "roc_auc": 0.9984500000000001,
+  "acc_sharp": 0.96,
+  "acc_defocus": 1.0,
+  "acc_motion": 0.98,
+  "seed": 45
+}
+[real_motion_only seed 46] device=cuda train=400 {('motion', 'real'): 200, ('sharp', 'real'): 200} val=60
+  epoch  1  loss 0.3543 acc 0.810  val_loss 0.0617 val_acc 0.983 *
+  epoch  2  loss 0.0631 acc 0.988  val_loss 0.0288 val_acc 1.000 *
+  epoch  3  loss 0.0171 acc 0.998  val_loss 0.0356 val_acc 0.983
+  epoch  4  loss 0.0196 acc 0.993  val_loss 0.0212 val_acc 1.000 *
+  epoch  5  loss 0.0092 acc 1.000  val_loss 0.0243 val_acc 1.000
+  epoch  6  loss 0.0108 acc 0.998  val_loss 0.0192 val_acc 1.000 *
+  epoch  7  loss 0.0149 acc 0.995  val_loss 0.0395 val_acc 0.983
+  epoch  8  loss 0.0425 acc 0.990  val_loss 0.0303 val_acc 0.983
+  epoch  9  loss 0.0092 acc 0.998  val_loss 0.0605 val_acc 0.967
+  epoch 10  loss 0.0105 acc 0.998  val_loss 0.0346 val_acc 1.000
+  epoch 11  loss 0.0072 acc 1.000  val_loss 0.2466 val_acc 0.900
+  epoch 12  loss 0.0114 acc 0.995  val_loss 0.0201 val_acc 1.000
+  epoch 13  loss 0.0039 acc 1.000  val_loss 0.0105 val_acc 1.000 *
+  epoch 14  loss 0.0065 acc 0.998  val_loss 0.0424 val_acc 0.983
+  epoch 15  loss 0.0025 acc 1.000  val_loss 0.0354 val_acc 0.983
+[real_motion_only seed 46] 21s on cuda; best checkpoint -> /home/work/EF2039_AI_Basic/EF2039_AI_Programming_PA04/models/real_motion_only_seed46.pt
+{
+  "experiment": "real_motion_only",
+  "n_test": 300,
+  "accuracy": 0.9866666666666667,
+  "balanced_accuracy": 0.985,
+  "precision_blurry": 0.99,
+  "recall_blurry": 0.99,
+  "f1_blurry": 0.99,
+  "roc_auc": 0.9981499999999999,
+  "acc_sharp": 0.98,
+  "acc_defocus": 1.0,
+  "acc_motion": 0.98,
+  "seed": 46
+}
+[real_defocus_only seed 42] device=cuda train=400 {('defocus', 'real'): 200, ('sharp', 'real'): 200} val=60
+  epoch  1  loss 0.3183 acc 0.873  val_loss 0.0717 val_acc 0.983 *
+  epoch  2  loss 0.0250 acc 0.995  val_loss 0.0338 val_acc 1.000 *
+  epoch  3  loss 0.0112 acc 0.998  val_loss 0.0046 val_acc 1.000 *
+  epoch  4  loss 0.0101 acc 1.000  val_loss 0.0042 val_acc 1.000 *
+  epoch  5  loss 0.0044 acc 0.998  val_loss 0.0041 val_acc 1.000 *
+  epoch  6  loss 0.0044 acc 1.000  val_loss 0.0097 val_acc 1.000
+  epoch  7  loss 0.0013 acc 1.000  val_loss 0.0036 val_acc 1.000 *
+  epoch  8  loss 0.0019 acc 1.000  val_loss 0.0020 val_acc 1.000 *
+  epoch  9  loss 0.0009 acc 1.000  val_loss 0.0020 val_acc 1.000 *
+  epoch 10  loss 0.0080 acc 0.995  val_loss 0.0054 val_acc 1.000
+  epoch 11  loss 0.0413 acc 0.985  val_loss 0.1004 val_acc 0.967
+  epoch 12  loss 0.0066 acc 1.000  val_loss 0.1019 val_acc 0.967
+  epoch 13  loss 0.0126 acc 0.995  val_loss 0.0487 val_acc 0.983
+  epoch 14  loss 0.0035 acc 1.000  val_loss 0.0060 val_acc 1.000
+  epoch 15  loss 0.0006 acc 1.000  val_loss 0.0023 val_acc 1.000
+[real_defocus_only seed 42] 22s on cuda; best checkpoint -> /home/work/EF2039_AI_Basic/EF2039_AI_Programming_PA04/models/real_defocus_only_seed42.pt
+{
+  "experiment": "real_defocus_only",
+  "n_test": 300,
+  "accuracy": 0.9633333333333334,
+  "balanced_accuracy": 0.97,
+  "precision_blurry": 0.9947643979057592,
+  "recall_blurry": 0.95,
+  "f1_blurry": 0.9718670076726342,
+  "roc_auc": 0.99665,
+  "acc_sharp": 0.99,
+  "acc_defocus": 0.99,
+  "acc_motion": 0.91,
+  "seed": 42
+}
+[real_defocus_only seed 43] device=cuda train=400 {('defocus', 'real'): 200, ('sharp', 'real'): 200} val=60
+  epoch  1  loss 0.3461 acc 0.833  val_loss 0.0576 val_acc 0.983 *
+  epoch  2  loss 0.0373 acc 0.995  val_loss 0.0196 val_acc 1.000 *
+  epoch  3  loss 0.0203 acc 0.998  val_loss 0.0111 val_acc 1.000 *
+  epoch  4  loss 0.0072 acc 1.000  val_loss 0.0080 val_acc 1.000 *
+  epoch  5  loss 0.0042 acc 1.000  val_loss 0.0090 val_acc 1.000
+  epoch  6  loss 0.0065 acc 0.998  val_loss 0.0064 val_acc 1.000 *
+  epoch  7  loss 0.0021 acc 1.000  val_loss 0.0054 val_acc 1.000 *
+  epoch  8  loss 0.0031 acc 1.000  val_loss 0.0044 val_acc 1.000 *
+  epoch  9  loss 0.0012 acc 1.000  val_loss 0.0051 val_acc 1.000
+  epoch 10  loss 0.0021 acc 1.000  val_loss 0.0049 val_acc 1.000
+  epoch 11  loss 0.0009 acc 1.000  val_loss 0.0047 val_acc 1.000
+  epoch 12  loss 0.0005 acc 1.000  val_loss 0.0056 val_acc 1.000
+  epoch 13  loss 0.0006 acc 1.000  val_loss 0.0049 val_acc 1.000
+  epoch 14  loss 0.0010 acc 1.000  val_loss 0.0044 val_acc 1.000
+  epoch 15  loss 0.0010 acc 1.000  val_loss 0.0057 val_acc 1.000
+[real_defocus_only seed 43] 22s on cuda; best checkpoint -> /home/work/EF2039_AI_Basic/EF2039_AI_Programming_PA04/models/real_defocus_only_seed43.pt
+{
+  "experiment": "real_defocus_only",
+  "n_test": 300,
+  "accuracy": 0.97,
+  "balanced_accuracy": 0.9775,
+  "precision_blurry": 1.0,
+  "recall_blurry": 0.955,
+  "f1_blurry": 0.9769820971867008,
+  "roc_auc": 0.99675,
+  "acc_sharp": 1.0,
+  "acc_defocus": 1.0,
+  "acc_motion": 0.91,
+  "seed": 43
+}
+[real_defocus_only seed 44] device=cuda train=400 {('defocus', 'real'): 200, ('sharp', 'real'): 200} val=60
+  epoch  1  loss 0.3334 acc 0.853  val_loss 0.1262 val_acc 0.950 *
+  epoch  2  loss 0.0409 acc 0.993  val_loss 0.0186 val_acc 1.000 *
+  epoch  3  loss 0.0080 acc 1.000  val_loss 0.0078 val_acc 1.000 *
+  epoch  4  loss 0.0118 acc 0.998  val_loss 0.0041 val_acc 1.000 *
+  epoch  5  loss 0.0050 acc 0.998  val_loss 0.0029 val_acc 1.000 *
+  epoch  6  loss 0.0016 acc 1.000  val_loss 0.0018 val_acc 1.000 *
+  epoch  7  loss 0.0030 acc 1.000  val_loss 0.0019 val_acc 1.000
+  epoch  8  loss 0.0019 acc 1.000  val_loss 0.0020 val_acc 1.000
+  epoch  9  loss 0.0018 acc 1.000  val_loss 0.0025 val_acc 1.000
+  epoch 10  loss 0.0041 acc 1.000  val_loss 0.0013 val_acc 1.000 *
+  epoch 11  loss 0.0025 acc 1.000  val_loss 0.0010 val_acc 1.000 *
+  epoch 12  loss 0.0006 acc 1.000  val_loss 0.0011 val_acc 1.000
+  epoch 13  loss 0.0005 acc 1.000  val_loss 0.0010 val_acc 1.000
+  epoch 14  loss 0.0008 acc 1.000  val_loss 0.0010 val_acc 1.000 *
+  epoch 15  loss 0.0006 acc 1.000  val_loss 0.0009 val_acc 1.000 *
+[real_defocus_only seed 44] 22s on cuda; best checkpoint -> /home/work/EF2039_AI_Basic/EF2039_AI_Programming_PA04/models/real_defocus_only_seed44.pt
+{
+  "experiment": "real_defocus_only",
+  "n_test": 300,
+  "accuracy": 0.97,
+  "balanced_accuracy": 0.9724999999999999,
+  "precision_blurry": 0.9897435897435898,
+  "recall_blurry": 0.965,
+  "f1_blurry": 0.9772151898734177,
+  "roc_auc": 0.9958500000000001,
+  "acc_sharp": 0.98,
+  "acc_defocus": 1.0,
+  "acc_motion": 0.93,
+  "seed": 44
+}
+[real_defocus_only seed 45] device=cuda train=400 {('defocus', 'real'): 200, ('sharp', 'real'): 200} val=60
+  epoch  1  loss 0.3094 acc 0.858  val_loss 0.0701 val_acc 0.967 *
+  epoch  2  loss 0.0316 acc 0.995  val_loss 0.0174 val_acc 1.000 *
+  epoch  3  loss 0.0332 acc 0.985  val_loss 0.0043 val_acc 1.000 *
+  epoch  4  loss 0.0081 acc 1.000  val_loss 0.0057 val_acc 1.000
+  epoch  5  loss 0.0055 acc 1.000  val_loss 0.0063 val_acc 1.000
+  epoch  6  loss 0.0029 acc 1.000  val_loss 0.0055 val_acc 1.000
+  epoch  7  loss 0.0013 acc 1.000  val_loss 0.0052 val_acc 1.000
+  epoch  8  loss 0.0017 acc 1.000  val_loss 0.0039 val_acc 1.000 *
+  epoch  9  loss 0.0055 acc 0.998  val_loss 0.0055 val_acc 1.000
+  epoch 10  loss 0.0013 acc 1.000  val_loss 0.0031 val_acc 1.000 *
+  epoch 11  loss 0.0042 acc 1.000  val_loss 0.0061 val_acc 1.000
+  epoch 12  loss 0.0020 acc 1.000  val_loss 0.0072 val_acc 1.000
+  epoch 13  loss 0.0007 acc 1.000  val_loss 0.0086 val_acc 1.000
+  epoch 14  loss 0.0005 acc 1.000  val_loss 0.0068 val_acc 1.000
+  epoch 15  loss 0.0003 acc 1.000  val_loss 0.0061 val_acc 1.000
+[real_defocus_only seed 45] 22s on cuda; best checkpoint -> /home/work/EF2039_AI_Basic/EF2039_AI_Programming_PA04/models/real_defocus_only_seed45.pt
+{
+  "experiment": "real_defocus_only",
+  "n_test": 300,
+  "accuracy": 0.9733333333333334,
+  "balanced_accuracy": 0.975,
+  "precision_blurry": 0.9897959183673469,
+  "recall_blurry": 0.97,
+  "f1_blurry": 0.9797979797979798,
+  "roc_auc": 0.9962,
+  "acc_sharp": 0.98,
+  "acc_defocus": 1.0,
+  "acc_motion": 0.94,
+  "seed": 45
+}
+[real_defocus_only seed 46] device=cuda train=400 {('defocus', 'real'): 200, ('sharp', 'real'): 200} val=60
+  epoch  1  loss 0.3300 acc 0.845  val_loss 0.0700 val_acc 0.967 *
+  epoch  2  loss 0.0336 acc 0.993  val_loss 0.0226 val_acc 0.983 *
+  epoch  3  loss 0.0097 acc 1.000  val_loss 0.0238 val_acc 1.000
+  epoch  4  loss 0.0216 acc 0.995  val_loss 0.0087 val_acc 1.000 *
+  epoch  5  loss 0.0082 acc 1.000  val_loss 0.0045 val_acc 1.000 *
+  epoch  6  loss 0.0054 acc 1.000  val_loss 0.0044 val_acc 1.000 *
+  epoch  7  loss 0.0038 acc 1.000  val_loss 0.0026 val_acc 1.000 *
+  epoch  8  loss 0.0049 acc 1.000  val_loss 0.0050 val_acc 1.000
+  epoch  9  loss 0.0011 acc 1.000  val_loss 0.0038 val_acc 1.000
+  epoch 10  loss 0.0010 acc 1.000  val_loss 0.0027 val_acc 1.000
+  epoch 11  loss 0.0027 acc 0.998  val_loss 0.0021 val_acc 1.000 *
+  epoch 12  loss 0.0048 acc 1.000  val_loss 0.0041 val_acc 1.000
+  epoch 13  loss 0.0008 acc 1.000  val_loss 0.0013 val_acc 1.000 *
+  epoch 14  loss 0.0016 acc 1.000  val_loss 0.0017 val_acc 1.000
+  epoch 15  loss 0.0006 acc 1.000  val_loss 0.0019 val_acc 1.000
+[real_defocus_only seed 46] 22s on cuda; best checkpoint -> /home/work/EF2039_AI_Basic/EF2039_AI_Programming_PA04/models/real_defocus_only_seed46.pt
+{
+  "experiment": "real_defocus_only",
+  "n_test": 300,
+  "accuracy": 0.9566666666666667,
+  "balanced_accuracy": 0.9624999999999999,
+  "precision_blurry": 0.9895287958115183,
+  "recall_blurry": 0.945,
+  "f1_blurry": 0.9667519181585678,
+  "roc_auc": 0.9953500000000001,
+  "acc_sharp": 0.98,
+  "acc_defocus": 1.0,
+  "acc_motion": 0.89,
+  "seed": 46
+}
+        experiment  n_runs     acc_sharp   acc_defocus    acc_motion balanced_accuracy     f1_blurry       roc_auc
+laplacian_baseline       1 0.820 ± 0.000 0.990 ± 0.000 0.840 ± 0.000     0.867 ± 0.000 0.913 ± 0.000 0.952 ± 0.000
+        real_mixed       5 0.960 ± 0.012 1.000 ± 0.000 0.986 ± 0.005     0.977 ± 0.005 0.987 ± 0.002 0.999 ± 0.000
+       synth_mixed       5 0.982 ± 0.013 0.990 ± 0.007 0.948 ± 0.023     0.975 ± 0.005 0.980 ± 0.006 0.997 ± 0.000
+  real_motion_only       5 0.960 ± 0.012 0.998 ± 0.004 0.988 ± 0.008     0.977 ± 0.005 0.987 ± 0.002 0.998 ± 0.000
+ real_defocus_only       5 0.986 ± 0.009 0.998 ± 0.004 0.916 ± 0.019     0.972 ± 0.006 0.975 ± 0.005 0.996 ± 0.001
+Wrote figures to /home/work/EF2039_AI_Basic/EF2039_AI_Programming_PA04/results/figures

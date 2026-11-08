@@ -1,0 +1,14 @@
+{
+  "experiment": "synth_mixed",
+  "n_test": 300,
+  "accuracy": 0.98,
+  "balanced_accuracy": 0.9824999999999999,
+  "precision_blurry": 0.9948979591836735,
+  "recall_blurry": 0.975,
+  "f1_blurry": 0.9848484848484849,
+  "roc_auc": 0.9966999999999999,
+  "acc_sharp": 0.99,
+  "acc_defocus": 0.99,
+  "acc_motion": 0.96,
+  "seed": 42
+}
