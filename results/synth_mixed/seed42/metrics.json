@@ -9,5 +9,6 @@
   "roc_auc": 0.9966999999999999,
   "acc_sharp": 0.99,
   "acc_defocus": 0.99,
-  "acc_motion": 0.96
+  "acc_motion": 0.96,
+  "seed": 42
 }

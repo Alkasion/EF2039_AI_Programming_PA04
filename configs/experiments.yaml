@@ -4,7 +4,7 @@
 # Dataset: Kaggle "Blur dataset" (kwentar/blur-dataset), 350 scenes, each photographed
 #          three times: sharp (S), defocus-blurred (F) and motion-blurred (M).
 
-seed: 42
+seed: 42                         # data seed: splits and synthetic blur (fixed for every run)
 
 data:
   kaggle_id: kwentar/blur-dataset
@@ -32,6 +32,9 @@ train:
   weight_decay: 1.0e-4
   augment: true                  # horizontal flip only (does not change blur)
   num_workers: 0
+  # Every experiment is trained once per seed (classifier-head init, batch order, flips).
+  # Data and test set stay identical; results are reported as mean ± std over these runs.
+  seeds: [42, 43, 44, 45, 46]
 
 # Every experiment uses the same model, hyperparameters, seed, train scenes and fixed test set.
 # Each one trains on `train_scenes` sharp photos + `train_scenes` blurry photos.

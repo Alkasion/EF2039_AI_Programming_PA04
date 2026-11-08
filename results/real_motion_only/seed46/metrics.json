@@ -1,0 +1,14 @@
+{
+  "experiment": "real_motion_only",
+  "n_test": 300,
+  "accuracy": 0.99,
+  "balanced_accuracy": 0.9875,
+  "precision_blurry": 0.9900497512437811,
+  "recall_blurry": 0.995,
+  "f1_blurry": 0.9925187032418953,
+  "roc_auc": 0.9983,
+  "acc_sharp": 0.98,
+  "acc_defocus": 1.0,
+  "acc_motion": 0.99,
+  "seed": 46
+}

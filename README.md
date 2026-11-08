@@ -117,7 +117,11 @@ python -m src.prepare_data --download
 
 ImageNet-pretrained ResNet-18 (torchvision), all layers fine-tuned, 2-class head. AdamW, learning rate
 1e-4, weight decay 1e-4, batch size 32, 15 epochs, horizontal-flip augmentation, cross-entropy loss.
-The epoch with the lowest validation loss is kept. Seed 42 everywhere.
+The epoch with the lowest validation loss is kept.
+
+**Seeds.** Data splits and synthetic blur use seed 42 and never change. Every experiment is trained
+5 times with training seeds 42–46 (classifier-head initialisation, batch order, flips), and results are
+reported as mean ± standard deviation over the 5 runs. The Laplacian baseline is deterministic (1 run).
 
 ## Evaluation
 
@@ -129,39 +133,39 @@ as many blurry as sharp photos), accuracy, precision / recall / F1 for `blurry`,
 
 ```bash
 python -m src.prepare_data --download   # once: data + processed images + splits
-python -m src.run_all --skip-prepare    # baseline, 4 x (train + evaluate), summary, figures
+python -m src.run_all --skip-prepare    # baseline, 4 experiments x 5 seeds (train + evaluate), summary, figures
 ```
 
 Individual steps:
 
 ```bash
 python -m src.baseline_laplacian
-python -m src.train --exp real_mixed
-python -m src.evaluate --exp real_mixed
+python -m src.train --exp real_mixed              # all 5 seeds (add --seed 42 for one)
+python -m src.evaluate --exp real_mixed           # all 5 seeds (add --seed 42 for one)
 python -m src.evaluate --summary
 python -m src.make_figures
 ```
 
 To evaluate the released checkpoints without training, download them (see `models/README.md`) and run
-`python -m src.evaluate --exp <name>` for each experiment.
+`python -m src.evaluate --exp <name>` for each experiment, then `python -m src.evaluate --summary`.
 
 ## Hardware
 
-Results above were produced on an Apple M4 MacBook (10-core CPU, 16 GB RAM) with PyTorch MPS. Training took about 68–78 s per experiment (15 epochs, 400 images); preprocessing about 1 min. A GPU is not required; CPU-only training works but is slower (not yet timed). About 2 GB of disk (1.6 GB download + images) and 4 GB of RAM are enough.
+Results above were produced on an Apple M4 MacBook (10-core CPU, 16 GB RAM) with PyTorch MPS. One training run took 59–84 s (15 epochs, 400 images); all 20 runs plus evaluation took about 28 min. Preprocessing takes about 1 min. A GPU is not required; CPU-only training works but is slower (not yet timed). About 2 GB of disk (1.6 GB download + images) and 4 GB of RAM are enough; the 20 checkpoints need another 0.9 GB.
 
 ## Expected results
 
 | Method | Train blur | Sharp kept | Defocus rejected | Motion rejected | Balanced acc. | F1 (blurry) | ROC-AUC |
 |---|---|---|---|---|---|---|---|
-| `laplacian_baseline` | none (threshold tuned on val_real_mixed) | 0.82 | 0.99 | 0.84 | 0.87 | 0.91 | 0.95 |
-| `real_mixed` | real defocus + real motion | 0.96 | 1.00 | 0.99 | 0.98 | 0.99 | 1.00 |
-| `synth_mixed` | synthetic defocus + synthetic motion | 0.99 | 0.99 | 0.96 | 0.98 | 0.98 | 1.00 |
-| `real_motion_only` | real motion | 0.95 | 1.00 | 0.99 | 0.97 | 0.99 | 1.00 |
-| `real_defocus_only` | real defocus | 0.99 | 0.99 | 0.91 | 0.97 | 0.97 | 1.00 |
+| `laplacian_baseline` | none (threshold tuned on val_real_mixed) | 0.820 | 0.990 | 0.840 | 0.868 | 0.913 | 0.953 |
+| `real_mixed` | real defocus + real motion | 0.966 ± 0.005 | 1.000 ± 0.000 | 0.984 ± 0.005 | 0.979 ± 0.001 | 0.988 ± 0.000 | 0.999 ± 0.000 |
+| `synth_mixed` | synthetic defocus + synthetic motion | 0.988 ± 0.004 | 0.986 ± 0.005 | 0.936 ± 0.015 | 0.975 ± 0.005 | 0.977 ± 0.004 | 0.997 ± 0.001 |
+| `real_motion_only` | real motion | 0.958 ± 0.013 | 0.998 ± 0.004 | 0.988 ± 0.008 | 0.976 ± 0.007 | 0.986 ± 0.004 | 0.999 ± 0.000 |
+| `real_defocus_only` | real defocus | 0.986 ± 0.009 | 0.998 ± 0.004 | 0.916 ± 0.026 | 0.972 ± 0.007 | 0.975 ± 0.007 | 0.996 ± 0.001 |
 
-Test set: 100 sharp + 100 defocus + 100 motion real photos; one run, seed 42. Full numbers: `results/summary.csv`.
+Mean ± standard deviation over 5 training seeds (42–46); the baseline is deterministic. Test set: 100 sharp + 100 defocus + 100 motion real photos. Per-run numbers: `results/summary_per_seed.csv`.
 
-Small differences (about ±1 photo) are possible across devices, because GPU kernels are not bit-exact.
+Small differences (about ±1 photo per run) are possible across devices, because GPU kernels are not bit-exact.
 
 ## License and citation
 

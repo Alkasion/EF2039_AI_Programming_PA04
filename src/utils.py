@@ -67,7 +67,12 @@ def results_dir(exp_name=None):
     return d
 
 
-def model_path(exp_name):
+def run_name(exp_name, seed):
+    """Results of one training run live in results/<exp>/seed<seed>/."""
+    return f"{exp_name}/seed{seed}"
+
+
+def model_path(exp_name, seed):
     d = ROOT / "models"
     d.mkdir(parents=True, exist_ok=True)
-    return d / f"{exp_name}.pt"
+    return d / f"{exp_name}_seed{seed}.pt"

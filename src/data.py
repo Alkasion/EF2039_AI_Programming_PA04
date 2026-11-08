@@ -39,8 +39,8 @@ class BlurDataset(Dataset):
         return (x - IMAGENET_MEAN) / IMAGENET_STD, self.labels[i]
 
 
-def make_loader(cfg, df, shuffle=False, augment=False):
-    g = torch.Generator().manual_seed(cfg["seed"])
+def make_loader(cfg, df, shuffle=False, augment=False, seed=None):
+    g = torch.Generator().manual_seed(cfg["seed"] if seed is None else seed)
     return DataLoader(
         BlurDataset(cfg, df, augment=augment),
         batch_size=cfg["train"]["batch_size"],

@@ -1,0 +1,14 @@
+{
+  "experiment": "real_defocus_only",
+  "n_test": 300,
+  "accuracy": 0.9533333333333334,
+  "balanced_accuracy": 0.96,
+  "precision_blurry": 0.9894736842105263,
+  "recall_blurry": 0.94,
+  "f1_blurry": 0.9641025641025641,
+  "roc_auc": 0.99565,
+  "acc_sharp": 0.98,
+  "acc_defocus": 1.0,
+  "acc_motion": 0.88,
+  "seed": 46
+}

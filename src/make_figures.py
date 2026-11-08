@@ -3,8 +3,8 @@
 Usage: python -m src.make_figures
 Writes to results/figures/:
     samples.png               real vs synthetic blur on two test scenes
-    per_type_accuracy.png     share of sharp / defocus / motion test photos classified correctly
-    culling_demo.png          keep / reject decisions of real_mixed on test photos, incl. mistakes
+    per_type_accuracy.png     share of sharp / defocus / motion test photos classified correctly (mean ± std)
+    culling_demo.png          keep / reject decisions of real_mixed (first seed) on test photos, incl. mistakes
 """
 import json
 
@@ -16,8 +16,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from src.evaluate import BASELINES
-from src.utils import load_config, processed_dir, results_dir, splits_dir
+from src.utils import load_config, processed_dir, results_dir, run_name, splits_dir
 
 
 def _rgb(path):
@@ -44,25 +43,29 @@ def samples(cfg, out):
 
 
 def per_type_accuracy(cfg, out):
-    names = BASELINES + [e["name"] for e in cfg["experiments"]]
-    rows = []
-    for n in names:
-        p = results_dir(n) / "metrics.json"
-        if p.exists():
-            rows.append(json.loads(p.read_text()))
+    """Bars = mean over seeds, error bars = std, dots = individual runs."""
+    summary = pd.read_csv(results_dir() / "summary.csv")
+    runs = pd.read_csv(results_dir() / "summary_per_seed.csv")
     types = [("acc_sharp", "sharp (kept)"), ("acc_defocus", "defocus (rejected)"),
              ("acc_motion", "motion (rejected)")]
-    x = np.arange(len(rows))
+    x = np.arange(len(summary))
     w = 0.26
     colors = ["#4C78A8", "#F58518", "#54A24B"]
-    fig, ax = plt.subplots(figsize=(7.0, 2.8))
+    fig, ax = plt.subplots(figsize=(7.0, 2.9))
     for i, (key, label) in enumerate(types):
-        vals = [r[key] for r in rows]
-        bars = ax.bar(x + (i - 1) * w, vals, w, label=label, color=colors[i])
-        ax.bar_label(bars, labels=[f"{v:.2f}" for v in vals], fontsize=6.5, padding=1)
-    ax.set_xticks(x, [r["experiment"].replace("_", "\n", 1) for r in rows], fontsize=8)
+        means, stds = summary[f"{key}_mean"], summary[f"{key}_std"]
+        pos = x + (i - 1) * w
+        bars = ax.bar(pos, means, w, yerr=stds, capsize=2, label=label, color=colors[i],
+                      error_kw={"elinewidth": 0.8})
+        ax.bar_label(bars, labels=[f"{m:.2f}" for m in means], fontsize=6.5, padding=2,
+                     label_type="edge")
+        for k, name in enumerate(summary["experiment"]):
+            vals = runs.loc[runs["experiment"] == name, key].to_numpy()
+            if len(vals) > 1:
+                ax.scatter(np.full(len(vals), pos[k]), vals, s=4, color="black", zorder=3, linewidths=0)
+    ax.set_xticks(x, [n.replace("_", "\n", 1) for n in summary["experiment"]], fontsize=8)
     ax.set_ylabel("Correct on test photos")
-    ax.set_ylim(0, 1.05)
+    ax.set_ylim(0.6, 1.05)
     ax.legend(fontsize=7.5, ncol=3, loc="lower center", bbox_to_anchor=(0.5, 1.02), frameon=False)
     ax.spines[["top", "right"]].set_visible(False)
     fig.tight_layout()
@@ -71,7 +74,7 @@ def per_type_accuracy(cfg, out):
 
 
 def culling_demo(cfg, out, exp="real_mixed", n_correct=6, n_wrong=4):
-    p = results_dir(exp) / "predictions.csv"
+    p = results_dir(run_name(exp, cfg["train"]["seeds"][0])) / "predictions.csv"
     if not p.exists():
         return
     df = pd.read_csv(p)

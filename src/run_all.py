@@ -26,8 +26,9 @@ def main():
     run_baseline(cfg)
     timing = {"device": str(get_device())}
     for exp in cfg["experiments"]:
-        timing[exp["name"] + "_train_seconds"] = round(train(cfg, exp["name"]), 1)
-        evaluate(cfg, exp["name"])
+        for seed in cfg["train"]["seeds"]:
+            timing[f"{exp['name']}_seed{seed}_train_seconds"] = round(train(cfg, exp["name"], seed), 1)
+            evaluate(cfg, exp["name"], seed)
     with open(results_dir() / "timing.json", "w", encoding="utf-8") as f:
         json.dump(timing, f, indent=2)
     summarize(cfg)
