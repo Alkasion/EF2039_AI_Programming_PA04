@@ -1,30 +1,59 @@
 # Single source of truth for every experiment in the paper.
-# TODO(topic): fill in dataset + classes and replace the placeholder experiments
-# once the research questions are fixed.
+#
+# Task: binary blur detection for photo culling (sharp = keep, blurry = reject).
+# Dataset: Kaggle "Blur dataset" (kwentar/blur-dataset), 350 scenes, each photographed
+#          three times: sharp (S), defocus-blurred (F) and motion-blurred (M).
 
 seed: 42
 
 data:
-  raw_dir: data/raw          # expected layout: data/raw/<class_name>/<image files>
-  splits_dir: data/splits    # committed CSV split files (filepath,label)
-  classes: []                # TODO(topic): e.g. [class_a, class_b]
-  image_size: [224, 224]
-  test_per_class: 50         # fixed test set shared by ALL experiments
-  val_per_class: 10          # fixed validation set shared by ALL experiments
+  kaggle_id: kwentar/blur-dataset
+  raw_dir: data/raw              # data/raw/{sharp,defocused_blurred,motion_blurred}/<id>_<device>_<S|F|M>.<ext>
+  processed_dir: data/processed  # 224x224 PNGs produced by src.prepare_data
+  splits_dir: data/splits        # committed CSV split files
+  classes: [sharp, blurry]       # index 0 = sharp (keep), 1 = blurry (reject)
+  image_size: 224
+  resize_short_side: 448         # resize so the short side is 448 px, then center-crop 224x224
+  # Splits are made by SCENE, so the three photos of one scene never cross splits.
+  n_test_scenes: 100             # fixed test set: 100 sharp + 100 defocus + 100 motion (all real)
+  n_val_scenes: 30               # validation scenes (built with each experiment's own recipe)
+
+# Synthetic blur, applied to the sharp photo at the 448 px scale (before cropping).
+# Ranges are generic priors, not fitted to the real blurred photos.
+synthetic:
+  defocus_radius_px: [2, 8]      # disk (pillbox) kernel radius
+  motion_length_px: [5, 25]      # linear kernel length, random angle in [0, 180)
 
 train:
-  backbone: mobilenetv2      # mobilenetv2 (frozen ImageNet features) | small_cnn
-  epochs: 20
-  batch_size: 16
-  learning_rate: 1.0e-3
-  augment: false
+  backbone: resnet18             # ImageNet-pretrained torchvision model, fully fine-tuned
+  epochs: 15
+  batch_size: 32
+  learning_rate: 1.0e-4          # AdamW
+  weight_decay: 1.0e-4
+  augment: true                  # horizontal flip only (does not change blur)
+  num_workers: 0
 
-# Each experiment only differs in its training subset.
-# train_per_class: {default: N} or {<class_name>: N, ...} (missing classes fall back to default)
+# Every experiment uses the same model, hyperparameters, seed, train scenes and fixed test set.
+# Each one trains on `train_scenes` sharp photos + `train_scenes` blurry photos.
+# `blur` lists which blur types make up the blurry half and where they come from
+# (real photo or synthetic blur of the sharp photo). With two types, the scenes are split
+# in half: the first half provides one type, the second half the other.
+# The validation set (checkpoint selection) follows the same recipe on the validation scenes,
+# so no experiment ever sees a blur type or source it was not trained on.
 experiments:
-  - name: placeholder_balanced_10
-    rq: TBD
-    train_per_class: {default: 10}
-  - name: placeholder_balanced_200
-    rq: TBD
-    train_per_class: {default: 200}
+  - name: real_mixed
+    rq: RQ1 RQ2
+    train_scenes: 200
+    blur: {defocus: real, motion: real}
+  - name: synth_mixed
+    rq: RQ1
+    train_scenes: 200
+    blur: {defocus: synthetic, motion: synthetic}
+  - name: real_motion_only
+    rq: RQ2
+    train_scenes: 200
+    blur: {motion: real}
+  - name: real_defocus_only
+    rq: RQ2
+    train_scenes: 200
+    blur: {defocus: real}

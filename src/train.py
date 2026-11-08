@@ -1,38 +1,74 @@
-"""Train one experiment.
+"""Train one experiment; keep the epoch with the lowest validation loss.
 
 Usage: python -m src.train --exp <experiment_name>
 """
 import argparse
+import time
 
 import pandas as pd
-import tensorflow as tf
+import torch
 
-from src.data import make_dataset, read_split
+from src.data import make_loader, read_split
 from src.model import build_model
-from src.utils import find_experiment, load_config, model_path, results_dir, set_seed
+from src.utils import find_experiment, get_device, load_config, model_path, results_dir, set_seed
+
+
+def run_epoch(model, loader, device, optimizer=None):
+    train = optimizer is not None
+    model.train(train)
+    loss_fn = torch.nn.CrossEntropyLoss()
+    total_loss, correct, n = 0.0, 0, 0
+    with torch.set_grad_enabled(train):
+        for x, y in loader:
+            x, y = x.to(device), y.to(device)
+            logits = model(x)
+            loss = loss_fn(logits, y)
+            if train:
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
+            total_loss += loss.item() * len(y)
+            correct += (logits.argmax(1) == y).sum().item()
+            n += len(y)
+    return total_loss / n, correct / n
 
 
 def train(cfg, exp_name):
-    exp = find_experiment(cfg, exp_name)
+    find_experiment(cfg, exp_name)
     set_seed(cfg["seed"])
+    device = get_device()
+    tcfg = cfg["train"]
 
-    train_df = read_split(cfg, exp["name"])
-    val_df = read_split(cfg, "val")
-    print(f"[{exp_name}] train counts:\n{train_df['label'].value_counts().to_string()}")
+    train_df = read_split(cfg, f"train_{exp_name}")
+    val_df = read_split(cfg, f"val_{exp_name}")
+    counts = train_df.groupby(["blur_type", "source"]).size().to_dict()
+    print(f"[{exp_name}] device={device} train={len(train_df)} {counts} val={len(val_df)}")
 
-    train_ds = make_dataset(cfg, train_df, shuffle=True, augment=cfg["train"].get("augment", False))
-    val_ds = make_dataset(cfg, val_df)
+    train_loader = make_loader(cfg, train_df, shuffle=True, augment=tcfg.get("augment", False))
+    val_loader = make_loader(cfg, val_df)
 
-    model = build_model(cfg)
-    ckpt = model_path(exp_name)
-    callbacks = [
-        tf.keras.callbacks.ModelCheckpoint(str(ckpt), monitor="val_loss", save_best_only=True),
-    ]
-    history = model.fit(
-        train_ds, validation_data=val_ds, epochs=cfg["train"]["epochs"], callbacks=callbacks, verbose=2
-    )
-    pd.DataFrame(history.history).rename_axis("epoch").to_csv(results_dir(exp_name) / "history.csv")
-    print(f"[{exp_name}] best checkpoint -> {ckpt}")
+    model = build_model(cfg).to(device)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=tcfg["learning_rate"],
+                                  weight_decay=tcfg["weight_decay"])
+
+    history, best = [], float("inf")
+    start = time.time()
+    for epoch in range(1, tcfg["epochs"] + 1):
+        tr_loss, tr_acc = run_epoch(model, train_loader, device, optimizer)
+        va_loss, va_acc = run_epoch(model, val_loader, device)
+        history.append({"epoch": epoch, "loss": tr_loss, "accuracy": tr_acc,
+                        "val_loss": va_loss, "val_accuracy": va_acc})
+        flag = ""
+        if va_loss < best:
+            best = va_loss
+            torch.save(model.state_dict(), model_path(exp_name))
+            flag = " *"
+        print(f"  epoch {epoch:2d}  loss {tr_loss:.4f} acc {tr_acc:.3f}  "
+              f"val_loss {va_loss:.4f} val_acc {va_acc:.3f}{flag}")
+    elapsed = time.time() - start
+    pd.DataFrame(history).to_csv(results_dir(exp_name) / "history.csv", index=False, float_format="%.4f")
+    print(f"[{exp_name}] {elapsed:.0f}s on {device}; best checkpoint -> {model_path(exp_name)}")
+    return elapsed
 
 
 def main():

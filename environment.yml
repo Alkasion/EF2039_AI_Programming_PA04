@@ -1,12 +1,14 @@
 name: ef2039-pa04
 channels:
   - conda-forge
-  - defaults
 dependencies:
-  - python=3.10.0
+  - python=3.11
   - pip
   - pip:
-      - tensorflow==2.15.0
+      # PyTorch picks the best device at runtime: CUDA GPU > Apple MPS > CPU.
+      # On Linux, the default torch wheel ships with CUDA support.
+      - torch==2.5.1
+      - torchvision==0.20.1
       - numpy==1.26.4
       - opencv-python==4.10.0.84
       - scipy==1.14.1        # 1.15.x wheels fail to load on recent macOS

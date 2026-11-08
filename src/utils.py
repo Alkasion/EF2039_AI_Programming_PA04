@@ -1,4 +1,4 @@
-"""Shared helpers: paths, config access, and seeding."""
+"""Shared helpers: paths, config access, seeding and device selection."""
 import os
 import random
 from pathlib import Path
@@ -23,27 +23,38 @@ def find_experiment(cfg, name):
     raise KeyError(f"Unknown experiment '{name}'. Known: {known}")
 
 
-def per_class_count(exp, class_name):
-    spec = exp["train_per_class"]
-    if class_name in spec:
-        return int(spec[class_name])
-    if "default" in spec:
-        return int(spec["default"])
-    raise KeyError(f"No train count for class '{class_name}' in {exp['name']}")
-
-
 def set_seed(seed):
     """Seed every RNG we touch so splits and training are repeatable."""
     os.environ["PYTHONHASHSEED"] = str(seed)
     random.seed(seed)
     np.random.seed(seed)
-    import tensorflow as tf
+    import torch
 
-    tf.random.set_seed(seed)
-    try:
-        tf.config.experimental.enable_op_determinism()
-    except Exception:  # not supported on every backend
-        pass
+    torch.manual_seed(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+
+
+def get_device():
+    """CUDA GPU > Apple MPS > CPU. Override with PA04_DEVICE=cpu|mps|cuda."""
+    import torch
+
+    forced = os.environ.get("PA04_DEVICE")
+    if forced:
+        return torch.device(forced)
+    if torch.cuda.is_available():
+        return torch.device("cuda")
+    if torch.backends.mps.is_available():
+        return torch.device("mps")
+    return torch.device("cpu")
+
+
+def raw_dir(cfg):
+    return ROOT / cfg["data"]["raw_dir"]
+
+
+def processed_dir(cfg):
+    return ROOT / cfg["data"]["processed_dir"]
 
 
 def splits_dir(cfg):
@@ -59,4 +70,4 @@ def results_dir(exp_name=None):
 def model_path(exp_name):
     d = ROOT / "models"
     d.mkdir(parents=True, exist_ok=True)
-    return d / f"{exp_name}.keras"
+    return d / f"{exp_name}.pt"

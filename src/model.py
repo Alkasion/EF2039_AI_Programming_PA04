@@ -1,36 +1,25 @@
-"""Classifier definitions. All experiments share one architecture; only data changes."""
-import tensorflow as tf
+"""Classifier definition. All experiments share one architecture; only the training data changes."""
+import torch
+import torchvision
 
 
-def build_model(cfg):
+def build_model(cfg, pretrained=True):
     num_classes = len(cfg["data"]["classes"])
-    h, w = cfg["data"]["image_size"]
-    backbone = cfg["train"]["backbone"]
-    inputs = tf.keras.Input(shape=(h, w, 3))
-
-    if backbone == "mobilenetv2":
-        x = tf.keras.applications.mobilenet_v2.preprocess_input(inputs)
-        base = tf.keras.applications.MobileNetV2(
-            input_shape=(h, w, 3), include_top=False, weights="imagenet", pooling="avg"
-        )
-        base.trainable = False
-        x = base(x, training=False)
-        x = tf.keras.layers.Dropout(0.2)(x)
-    elif backbone == "small_cnn":
-        x = tf.keras.layers.Rescaling(1.0 / 255)(inputs)
-        for filters in (32, 64, 128):
-            x = tf.keras.layers.Conv2D(filters, 3, padding="same", activation="relu")(x)
-            x = tf.keras.layers.MaxPooling2D()(x)
-        x = tf.keras.layers.GlobalAveragePooling2D()(x)
-        x = tf.keras.layers.Dropout(0.3)(x)
+    name = cfg["train"]["backbone"]
+    if name == "resnet18":
+        weights = torchvision.models.ResNet18_Weights.IMAGENET1K_V1 if pretrained else None
+        model = torchvision.models.resnet18(weights=weights)
+        model.fc = torch.nn.Linear(model.fc.in_features, num_classes)
+    elif name == "efficientnet_b0":
+        weights = torchvision.models.EfficientNet_B0_Weights.IMAGENET1K_V1 if pretrained else None
+        model = torchvision.models.efficientnet_b0(weights=weights)
+        model.classifier[1] = torch.nn.Linear(model.classifier[1].in_features, num_classes)
     else:
-        raise ValueError(f"Unknown backbone: {backbone}")
-
-    outputs = tf.keras.layers.Dense(num_classes, activation="softmax")(x)
-    model = tf.keras.Model(inputs, outputs, name=f"clf_{backbone}")
-    model.compile(
-        optimizer=tf.keras.optimizers.Adam(cfg["train"]["learning_rate"]),
-        loss="sparse_categorical_crossentropy",
-        metrics=["accuracy"],
-    )
+        raise ValueError(f"Unknown backbone: {name}")
     return model
+
+
+def load_trained(cfg, path, device):
+    model = build_model(cfg, pretrained=False)
+    model.load_state_dict(torch.load(path, map_location="cpu", weights_only=True))
+    return model.to(device).eval()

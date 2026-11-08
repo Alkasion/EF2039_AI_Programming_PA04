@@ -1,37 +1,50 @@
-"""Turn a split CSV into a tf.data pipeline."""
+"""Turn a split CSV into a PyTorch DataLoader."""
+import cv2
 import pandas as pd
-import tensorflow as tf
+import torch
+from torch.utils.data import DataLoader, Dataset
 
-from src.utils import ROOT
+from src.utils import processed_dir, splits_dir
+
+IMAGENET_MEAN = torch.tensor([0.485, 0.456, 0.406]).view(3, 1, 1)
+IMAGENET_STD = torch.tensor([0.229, 0.224, 0.225]).view(3, 1, 1)
 
 
 def read_split(cfg, name):
-    """name: 'test', 'val' or an experiment name (-> train_<name>.csv)."""
-    fname = f"{name}.csv" if name in ("test", "val") else f"train_{name}.csv"
-    path = ROOT / cfg["data"]["splits_dir"] / fname
+    """name: 'test', 'train_<exp>' or 'val_<exp>'."""
+    path = splits_dir(cfg) / f"{name}.csv"
     if not path.exists():
         raise FileNotFoundError(f"{path} not found. Run `python -m src.prepare_data` first.")
     return pd.read_csv(path)
 
 
-def make_dataset(cfg, df, shuffle=False, augment=False):
-    classes = cfg["data"]["classes"]
-    h, w = cfg["data"]["image_size"]
-    raw_dir = str(ROOT / cfg["data"]["raw_dir"])
+class BlurDataset(Dataset):
+    def __init__(self, cfg, df, augment=False):
+        root = processed_dir(cfg)
+        classes = cfg["data"]["classes"]
+        self.paths = [root / p for p in df["filepath"]]
+        self.labels = [classes.index(l) for l in df["label"]]
+        self.augment = augment
 
-    paths = [f"{raw_dir}/{p}" for p in df["filepath"]]
-    labels = [classes.index(l) for l in df["label"]]
+    def __len__(self):
+        return len(self.paths)
 
-    def load(path, label):
-        img = tf.io.decode_image(tf.io.read_file(path), channels=3, expand_animations=False)
-        img = tf.image.resize(img, (h, w))
-        return tf.cast(img, tf.float32), label  # model handles its own scaling
+    def __getitem__(self, i):
+        img = cv2.imread(str(self.paths[i]))
+        if img is None:
+            raise IOError(f"Unreadable image: {self.paths[i]}")
+        x = torch.from_numpy(cv2.cvtColor(img, cv2.COLOR_BGR2RGB)).permute(2, 0, 1).float() / 255.0
+        if self.augment and torch.rand(1).item() < 0.5:
+            x = x.flip(-1)  # horizontal flip keeps the blur unchanged
+        return (x - IMAGENET_MEAN) / IMAGENET_STD, self.labels[i]
 
-    ds = tf.data.Dataset.from_tensor_slices((paths, labels))
-    if shuffle:
-        ds = ds.shuffle(len(paths), seed=cfg["seed"], reshuffle_each_iteration=True)
-    ds = ds.map(load, num_parallel_calls=tf.data.AUTOTUNE)
-    if augment:
-        flip = tf.keras.layers.RandomFlip("horizontal", seed=cfg["seed"])
-        ds = ds.map(lambda x, y: (flip(x, training=True), y), num_parallel_calls=tf.data.AUTOTUNE)
-    return ds.batch(cfg["train"]["batch_size"]).prefetch(tf.data.AUTOTUNE)
+
+def make_loader(cfg, df, shuffle=False, augment=False):
+    g = torch.Generator().manual_seed(cfg["seed"])
+    return DataLoader(
+        BlurDataset(cfg, df, augment=augment),
+        batch_size=cfg["train"]["batch_size"],
+        shuffle=shuffle,
+        generator=g,
+        num_workers=cfg["train"].get("num_workers", 0),
+    )

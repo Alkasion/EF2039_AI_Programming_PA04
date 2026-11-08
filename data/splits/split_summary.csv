@@ -1,0 +1,14 @@
+experiment,split,blur_type,source,n_images
+real_mixed,train,defocus,real,100
+real_mixed,train,motion,real,100
+real_mixed,train,sharp,real,200
+synth_mixed,train,defocus,synthetic,100
+synth_mixed,train,motion,synthetic,100
+synth_mixed,train,sharp,real,200
+real_motion_only,train,motion,real,200
+real_motion_only,train,sharp,real,200
+real_defocus_only,train,defocus,real,200
+real_defocus_only,train,sharp,real,200
+ALL,test,sharp,real,100
+ALL,test,defocus,real,100
+ALL,test,motion,real,100
