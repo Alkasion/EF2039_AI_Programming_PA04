@@ -222,5 +222,7 @@ and library versions differ, but every conclusion is the same on both devices. F
 
 ## License and citation
 
+The code and the result files in this repository are released under the MIT License (see `LICENSE`).
+
 The images belong to the Blur dataset authors (see the Kaggle page for its license) and are not
 redistributed here; `src/prepare_data.py --download` fetches them from Kaggle.
