@@ -4,13 +4,13 @@ Course: EF2039 Introduction to AI Programming (KENTECH)
 
 Photo culling means throwing away the unusable shots from a photo session. This repository trains a
 binary classifier that decides **keep (sharp)** or **reject (blurry)** for a photo, and studies how the
-*training data* changes the result. Model, hyperparameters, seed, training scenes and the test set are
+training data changes the result. Model, hyperparameters, seed, training scenes and the test set are
 the same in every experiment; only the blurry training photos change.
 
 ## Research questions
 
 - **RQ1 (synthetic vs. real data):** If we only have sharp photos and create blurry ones artificially
-  (disk / motion kernels), how well does the model detect *real* blurry photos, compared with training
+  (disk / motion kernels), how well does the model detect real blurry photos, compared with training
   on real blurry photos?
 - **RQ2 (diversity of blur types):** If the training data contains only one kind of blur (motion or
   defocus), does the model still detect the other kind?
