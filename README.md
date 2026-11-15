@@ -147,8 +147,26 @@ python -m src.evaluate --summary
 python -m src.make_figures
 ```
 
-To evaluate the released checkpoints without training, download them (see `models/README.md`) and run
-`python -m src.evaluate --exp <name>` for each experiment, then `python -m src.evaluate --summary`.
+## Trained model weights
+
+The 20 checkpoints behind `results/` (4 experiments x seeds 42–46, ResNet-18 `state_dict`, ~43 MB each)
+are attached to the GitHub Release
+[v1.0](https://github.com/Alkasion/EF2039_AI_Programming_PA04/releases/tag/v1.0).
+To evaluate them without training:
+
+```bash
+for e in real_mixed synth_mixed real_motion_only real_defocus_only; do
+  for s in 42 43 44 45 46; do
+    curl -L -o models/${e}_seed$s.pt \
+      https://github.com/Alkasion/EF2039_AI_Programming_PA04/releases/download/v1.0/${e}_seed$s.pt
+  done
+done
+python -m src.prepare_data --download                     # test images (skip if already done)
+for e in real_mixed synth_mixed real_motion_only real_defocus_only; do python -m src.evaluate --exp $e; done
+python -m src.baseline_laplacian && python -m src.evaluate --summary
+```
+
+`results/summary.csv` should then match the "Expected results" table below.
 
 ## Hardware
 
