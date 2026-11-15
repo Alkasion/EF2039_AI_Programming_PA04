@@ -17,6 +17,6 @@ Everything here except `splits/` is created by `python -m src.prepare_data --dow
 - `test.csv` — fixed, shared by all experiments: 100 scenes x {sharp, defocus, motion} = 300 real photos
 - `train_<experiment>.csv`, `val_<experiment>.csv` — 200 train scenes / 30 val scenes, built with the
   experiment's recipe (one sharp + one blurry photo per scene)
-- `split_summary.csv` — number of training images per blur type and source for every experiment
+- `split_summary.csv` — number of train / val / test images per blur type and source for every experiment
 
 Scenes, not photos, are split, so no scene appears in more than one of test / val / train.

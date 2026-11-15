@@ -104,7 +104,11 @@ def evaluate(cfg, exp_name, seed):
     set_seed(seed)
     device = get_device()
     test_df = read_split(cfg, "test")
-    model = load_trained(cfg, model_path(exp_name, seed), device)
+    ckpt = model_path(exp_name, seed)
+    if not ckpt.exists():
+        raise FileNotFoundError(f"{ckpt} not found. Train it (`python -m src.train --exp {exp_name} --seed {seed}`) "
+                                "or download it, see models/README.md.")
+    model = load_trained(cfg, ckpt, device)
     p_blurry = predict(model, make_loader(cfg, test_df), device)
     return score_predictions(exp_name, test_df, p_blurry, extra={"seed": seed},
                              out_name=run_name(exp_name, seed))
@@ -133,6 +137,8 @@ def collect_runs(cfg):
 
 def summarize(cfg):
     runs = collect_runs(cfg)
+    if runs.empty:
+        raise SystemExit("No results found. Run `python -m src.baseline_laplacian` and `python -m src.evaluate --exp <name>` first.")
     runs["seed"] = runs["seed"].astype("Int64")  # baseline has no seed
     runs[["experiment", "seed"] + METRIC_COLS].to_csv(
         results_dir() / "summary_per_seed.csv", index=False, float_format="%.4f")

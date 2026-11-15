@@ -30,9 +30,11 @@ Every experiment also uses the same 200 real sharp photos, so each training set 
 ```
 configs/experiments.yaml   # dataset, preprocessing, hyperparameters, every experiment (single source of truth)
 src/prepare_data.py        # download, preprocess, synthetic blur, scene-level splits
-src/train.py               # train one experiment -> models/<exp>.pt
-src/evaluate.py            # inference on the fixed test set -> results/<exp>/*, results/summary.csv
+src/train.py               # train one experiment -> models/<exp>_seed<seed>.pt
+src/evaluate.py            # inference on the fixed test set -> results/<exp>/seed<seed>/*, results/summary.csv
+src/predict.py             # inference on your own photos (keep / reject)
 src/baseline_laplacian.py  # classical Laplacian-variance baseline
+src/check_preprocessing.py # the resize-vs-crop comparison quoted under "Data"
 src/make_figures.py        # figures in results/figures/
 src/run_all.py             # one command: (prepare) -> baseline -> train + evaluate all -> summary -> figures
 data/splits/               # committed split CSVs — the exact files used
@@ -96,8 +98,9 @@ listed under `pip:` in `environment.yml` gives the same versions.
   motion-blurred (M) photo → 1,050 photos.
 - **Labels:** `sharp` (keep) for S; `blurry` (reject) for F and M. The blur type is kept for analysis.
 - **Preprocessing:** resize so the short side is 448 px, then center-crop 224×224. Resizing the whole
-  photo straight to 224×224 hides much of the blur (on 120 scenes, the Laplacian-variance AUC for motion
-  blur drops from 0.92 to 0.88), so we keep more pixels per object and crop.
+  photo straight to 224×224 hides much of the blur: on the 250 train/validation scenes, the ROC-AUC of
+  Laplacian variance drops from 0.94 to 0.90 for motion blur and from 0.99 to 0.96 for defocus
+  (`python -m src.check_preprocessing`), so we keep more pixels per object and crop.
 - **Synthetic blur:** each sharp photo blurred at the 448 px scale with a disk kernel (radius 2–8 px)
   or a linear motion kernel (length 5–25 px, angle 0–180°), seeded per scene. The ranges are generic
   choices and were **not** tuned on the real blurry photos.
@@ -106,7 +109,8 @@ listed under `pip:` in `environment.yml` gives the same versions.
   The validation set follows each experiment's own recipe, so e.g. `synth_mixed` never sees a real
   blurry photo, even for checkpoint selection.
 - **Test set (fixed):** 100 sharp + 100 defocus + 100 motion real photos (`data/splits/test.csv`).
-- **Class distribution per experiment:** `data/splits/split_summary.csv`.
+- **Class distribution per experiment (train and validation):** `data/splits/split_summary.csv`.
+  Every training set is 200 sharp + 200 blurry, every validation set 30 sharp + 30 blurry.
 
 Download (~1.6 GB, no Kaggle account needed) and build everything:
 
@@ -149,7 +153,7 @@ python -m src.make_figures
 
 ## Trained model weights
 
-The 20 checkpoints behind `results/` (4 experiments x seeds 42–46, ResNet-18 `state_dict`, ~43 MB each)
+The 20 checkpoints behind `results/` (4 experiments x seeds 42–46, ResNet-18 `state_dict`, ~45 MB each)
 are attached to the GitHub Release
 [v1.0](https://github.com/Alkasion/EF2039_AI_Programming_PA04/releases/tag/v1.0).
 To evaluate them without training:
@@ -168,9 +172,19 @@ python -m src.baseline_laplacian && python -m src.evaluate --summary
 
 `results/summary.csv` should then match the "Expected results" table below.
 
+## Inference on your own photos
+
+```bash
+python -m src.predict photo.jpg my_photos/                 # real_mixed, seed 42
+python -m src.predict my_photos/ --exp synth_mixed --seed 43 --csv decisions.csv
+```
+
+Prints P(blurry) and KEEP / REJECT for each photo. A photo gets the same preprocessing as the training
+data, so the decision is based on the 224×224 centre crop.
+
 ## Hardware
 
-Results above were produced on an Apple M4 MacBook (10-core CPU, 16 GB RAM) with PyTorch MPS. One training run took 59–84 s (15 epochs, 400 images); all 20 runs plus evaluation took about 28 min. Preprocessing takes about 1 min. A GPU is not required; CPU-only training works but is slower (not yet timed). About 2 GB of disk (1.6 GB download + images) and 4 GB of RAM are enough; the 20 checkpoints need another 0.9 GB.
+The results in `results/` were produced on an Apple M4 MacBook (10-core CPU, 16 GB RAM) with PyTorch MPS. One training run took 59–84 s (15 epochs, 400 images); all 20 runs plus evaluation took about 28 min. Preprocessing takes about 1 min. A GPU is not required; CPU-only training works but is slower (not yet timed). About 2 GB of disk (1.6 GB download + images) and 4 GB of RAM are enough; the 20 checkpoints need another 0.9 GB.
 
 ## Expected results
 

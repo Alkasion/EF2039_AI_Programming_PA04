@@ -22,6 +22,8 @@ def laplacian_variance(cfg, df):
     vals = []
     for p in df["filepath"]:
         gray = cv2.imread(str(root / p), cv2.IMREAD_GRAYSCALE)
+        if gray is None:
+            raise IOError(f"Unreadable image: {root / p}. Run `python -m src.prepare_data` first.")
         vals.append(cv2.Laplacian(gray, cv2.CV_64F).var())
     return np.array(vals)
 

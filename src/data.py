@@ -18,6 +18,15 @@ def read_split(cfg, name):
     return pd.read_csv(path)
 
 
+def to_tensor(img_bgr):
+    """224x224 BGR uint8 image (as read by OpenCV) -> RGB float tensor in [0, 1], shape (3, H, W)."""
+    return torch.from_numpy(cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)).permute(2, 0, 1).float() / 255.0
+
+
+def normalize(x):
+    return (x - IMAGENET_MEAN) / IMAGENET_STD
+
+
 class BlurDataset(Dataset):
     def __init__(self, cfg, df, augment=False):
         root = processed_dir(cfg)
@@ -33,10 +42,10 @@ class BlurDataset(Dataset):
         img = cv2.imread(str(self.paths[i]))
         if img is None:
             raise IOError(f"Unreadable image: {self.paths[i]}")
-        x = torch.from_numpy(cv2.cvtColor(img, cv2.COLOR_BGR2RGB)).permute(2, 0, 1).float() / 255.0
+        x = to_tensor(img)
         if self.augment and torch.rand(1).item() < 0.5:
             x = x.flip(-1)  # horizontal flip keeps the blur unchanged
-        return (x - IMAGENET_MEAN) / IMAGENET_STD, self.labels[i]
+        return normalize(x), self.labels[i]
 
 
 def make_loader(cfg, df, shuffle=False, augment=False, seed=None):

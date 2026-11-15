@@ -40,15 +40,26 @@ def download_dataset(cfg):
     dl_dir = ROOT / "data" / "download"
     dl_dir.mkdir(parents=True, exist_ok=True)
     zip_path = dl_dir / "blur-dataset.zip"
+    if zip_path.exists() and not zipfile.is_zipfile(zip_path):
+        print(f"{zip_path} is not a valid zip (interrupted download?); downloading again")
+        zip_path.unlink()
     if not zip_path.exists():
         print(f"Downloading {url} (~1.6 GB) ...")
-        with urllib.request.urlopen(url) as r, open(zip_path, "wb") as f:
+        # Write to a temporary name first, so an interrupted download is never mistaken for the archive.
+        part = zip_path.with_name(zip_path.name + ".part")
+        with urllib.request.urlopen(url) as r, open(part, "wb") as f:
             shutil.copyfileobj(r, f, length=1 << 20)
+        if not zipfile.is_zipfile(part):
+            part.unlink()
+            raise IOError(f"Download from {url} is not a zip archive. Download the dataset by hand from "
+                          f"https://www.kaggle.com/datasets/{cfg['data']['kaggle_id']} and save it as {zip_path}.")
+        part.replace(zip_path)
     # The archive holds the same images twice; use the 'blur_dataset_scaled/' copy.
     with zipfile.ZipFile(zip_path) as z:
         for name in z.namelist():
             parts = name.split("/")
-            if len(parts) == 3 and parts[0] == "blur_dataset_scaled" and parts[2]:
+            if (len(parts) == 3 and parts[0] == "blur_dataset_scaled" and parts[1] in RAW_FOLDERS.values()
+                    and parts[2] not in ("", ".", "..")):
                 dst = out / parts[1] / parts[2]
                 dst.parent.mkdir(parents=True, exist_ok=True)
                 with z.open(name) as src, open(dst, "wb") as f:
@@ -67,6 +78,11 @@ def center_crop(img, size):
     h, w = img.shape[:2]
     y, x = (h - size) // 2, (w - size) // 2
     return img[y:y + size, x:x + size]
+
+
+def preprocess_image(img, cfg):
+    """The preprocessing every photo goes through: short side to 448 px, then center-crop 224x224."""
+    return center_crop(resize_short_side(img, cfg["data"]["resize_short_side"]), cfg["data"]["image_size"])
 
 
 def disk_kernel(radius):
@@ -122,7 +138,7 @@ def preprocess(cfg, scenes):
             img = cv2.imread(str(entry[blur_type]))
             if img is None:
                 raise IOError(f"Unreadable image: {entry[blur_type]}")
-            img448 = resize_short_side(img, short)
+            img448 = resize_short_side(img, short)  # synthetic blur is applied at this scale
             dst = out / "real" / blur_type / f"{sid}.png"
             dst.parent.mkdir(parents=True, exist_ok=True)
             cv2.imwrite(str(dst), center_crop(img448, size))
@@ -176,10 +192,11 @@ def build_splits(cfg, scenes):
         val_rows = recipe_rows(scenes, val_ids, exp["blur"])
         save(train_rows, out / f"train_{exp['name']}.csv")
         save(val_rows, out / f"val_{exp['name']}.csv")
-        df = pd.DataFrame(train_rows, columns=COLUMNS)
-        for (bt, src), k in df.groupby(["blur_type", "source"]).size().items():
-            summary.append({"experiment": exp["name"], "split": "train", "blur_type": bt,
-                            "source": src, "n_images": k})
+        for split, rows in (("train", train_rows), ("val", val_rows)):
+            df = pd.DataFrame(rows, columns=COLUMNS)
+            for (bt, src), k in df.groupby(["blur_type", "source"]).size().items():
+                summary.append({"experiment": exp["name"], "split": split, "blur_type": bt,
+                                "source": src, "n_images": k})
     for bt in RAW_FOLDERS:
         summary.append({"experiment": "ALL", "split": "test", "blur_type": bt,
                         "source": "real", "n_images": len(test_ids)})

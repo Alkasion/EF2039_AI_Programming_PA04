@@ -54,6 +54,8 @@ def train(cfg, exp_name, seed):
     optimizer = torch.optim.AdamW(model.parameters(), lr=tcfg["learning_rate"],
                                   weight_decay=tcfg["weight_decay"])
 
+    ckpt = model_path(exp_name, seed)
+    ckpt.unlink(missing_ok=True)  # never leave a checkpoint from an earlier run behind
     history, best = [], float("inf")
     start = time.time()
     for epoch in range(1, tcfg["epochs"] + 1):
@@ -64,13 +66,15 @@ def train(cfg, exp_name, seed):
         flag = ""
         if va_loss < best:
             best = va_loss
-            torch.save(model.state_dict(), model_path(exp_name, seed))
+            torch.save(model.state_dict(), ckpt)
             flag = " *"
         print(f"  epoch {epoch:2d}  loss {tr_loss:.4f} acc {tr_acc:.3f}  "
               f"val_loss {va_loss:.4f} val_acc {va_acc:.3f}{flag}")
     elapsed = time.time() - start
+    if not ckpt.exists():
+        raise RuntimeError(f"[{exp_name} seed {seed}] validation loss was never finite; no checkpoint saved")
     pd.DataFrame(history).to_csv(results_dir(run_name(exp_name, seed)) / "history.csv", index=False, float_format="%.4f")
-    print(f"[{exp_name} seed {seed}] {elapsed:.0f}s on {device}; best checkpoint -> {model_path(exp_name, seed)}")
+    print(f"[{exp_name} seed {seed}] {elapsed:.0f}s on {device}; best checkpoint -> {ckpt}")
     return elapsed
 
 
